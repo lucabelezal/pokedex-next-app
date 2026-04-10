@@ -25,11 +25,11 @@ Ter uma régua objetiva para evolução contínua de qualidade técnica no proje
 
 | Dimensão | Nota atual | Meta |
 |---|---:|---:|
-| Arquitetura e composição | 8.2 | 10 |
+| Arquitetura e composição | 9.0 | 10 |
 | Type safety | 9.0 | 10 |
-| Testes e estabilidade | 8.8 | 10 |
-| Build e performance | 8.5 | 10 |
-| DX e governança | 8.5 | 10 |
+| Testes e estabilidade | 9.2 | 10 |
+| Build e performance | 9.0 | 10 |
+| DX e governança | 9.2 | 10 |
 | Documentação técnica | 9.0 | 10 |
 
 ## Plano operacional
@@ -42,11 +42,12 @@ Ter uma régua objetiva para evolução contínua de qualidade técnica no proje
 
 ## Status das fases
 
-- Fase 0: concluída
-- Fase 1: em progresso
-- Fase 2: concluída
-- Fase 3: em progresso (avançado)
-- Fase 4: em progresso
+- Fase 0: ✅ concluída
+- Fase 1: ✅ concluída
+- Fase 2: ✅ concluída
+- Fase 3: ✅ concluída
+- Fase 4: ✅ concluída
+- Fase 5: ✅ concluída
 
 ## Progresso recente
 
@@ -56,8 +57,12 @@ Ter uma régua objetiva para evolução contínua de qualidade técnica no proje
 4. Build blocker de onboarding resolvido.
 5. Hardening de type safety e validações runtime aplicados em rotas/hook.
 6. Suíte de testes unitários e de contrato criada e estabilizada.
-7. Testes de hook (`useFavorites`) e UI (`FavoritesClient`) adicionados.
-8. Base atual: 6 arquivos de teste e 23 testes passando.
+7. Testes de hook (`useFavorites`) e UI (`FavoritesClient`) com interação adicionados.
+8. `PokemonCard` envolvido em `React.memo` para evitar re-renders desnecessários na listagem.
+9. `selectedTypeColor` movido para `useMemo` em `use-pokedex-filters`.
+10. `toggle` em `DetailFavoriteToggle` envolvido em `useCallback`.
+11. Scripts `test:watch` e `test:coverage` adicionados ao `package.json`.
+12. Base atual: 6 arquivos de teste, 25 testes passando.
 
 ## Definition of Done (DoD)
 

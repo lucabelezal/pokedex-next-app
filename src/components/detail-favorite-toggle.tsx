@@ -40,7 +40,7 @@ export function DetailFavoriteToggle({ id, name }: DetailFavoriteToggleProps) {
     };
   }, [id, parseFavoriteState]);
 
-  const toggle = async () => {
+  const toggle = useCallback(async () => {
     if (favorite) {
       const response = await fetch(`/api/favorites/${id}`, { method: "DELETE" });
       if (!response.ok) {
@@ -63,7 +63,7 @@ export function DetailFavoriteToggle({ id, name }: DetailFavoriteToggleProps) {
 
     const data = await response.json();
     parseFavoriteState(parseFavoriteIdsResponse(data));
-  };
+  }, [favorite, id, parseFavoriteState]);
 
   return (
     <button

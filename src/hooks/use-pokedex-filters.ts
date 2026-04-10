@@ -37,9 +37,10 @@ export const usePokedexFilters = ({
   const [type, setType] = useState("all");
   const [sort, setSort] = useState<SortKey>(defaultSort);
 
-  const selectedTypeColor = type !== "all"
-    ? (typeFilters.find((filter) => filter.key === type)?.color ?? "")
-    : "";
+  const selectedTypeColor = useMemo(
+    () => (type !== "all" ? (typeFilters.find((filter) => filter.key === type)?.color ?? "") : ""),
+    [type, typeFilters]
+  );
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();

@@ -9,6 +9,7 @@
         "/bin/ls": true,
         "/usr/bin/sips": true,
         "npm run lint": true,
-        "npm install": true
+        "npm install": true,
+        "git commit": true
     }
 }

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { memo } from "react";
 import { HeartIcon } from "@/components/icons";
 import { ElementoOutline } from "@/components/elemento-outline";
 import { TypeBadge } from "@/components/type-badge";
@@ -13,7 +14,7 @@ type PokemonCardProps = {
   onToggleFavorite: (id: number) => void;
 };
 
-export function PokemonCard({
+export const PokemonCard = memo(function PokemonCard({
   pokemon,
   favorite,
   onToggleFavorite,
@@ -67,6 +68,5 @@ export function PokemonCard({
 
     </article>
   );
-}
-
+});
 
