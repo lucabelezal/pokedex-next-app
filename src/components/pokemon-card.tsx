@@ -11,14 +11,12 @@ type PokemonCardProps = {
   pokemon: PokemonCatalogItem;
   favorite: boolean;
   onToggleFavorite: (id: number) => void;
-  showDeleteAction?: boolean;
 };
 
 export function PokemonCard({
   pokemon,
   favorite,
   onToggleFavorite,
-  showDeleteAction = false,
 }: PokemonCardProps) {
   return (
     <article className="relative min-h-[136px] overflow-hidden rounded-[16px]" style={{ backgroundColor: pokemon.cardColor }}>
@@ -67,18 +65,6 @@ export function PokemonCard({
         </div>
       </div>
 
-      {showDeleteAction && (
-        <div className="absolute inset-y-0 right-0 flex w-[102px] items-center justify-center bg-[#dd2f33]">
-          <button
-            type="button"
-            className="rounded-xl border border-white/30 px-4 py-3 text-sm font-semibold text-white"
-            onClick={() => onToggleFavorite(pokemon.id)}
-            aria-label={`Remover ${pokemon.name} dos favoritos`}
-          >
-            Remover
-          </button>
-        </div>
-      )}
     </article>
   );
 }

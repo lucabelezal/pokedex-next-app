@@ -144,6 +144,12 @@ A pasta `.agents/` contém configurações para o **GitHub Copilot** (VS Code):
 ### Guias internos
 
 - [TypeScript Style Guide](doc/typescript-style-guide.md)
+- [Quality Scorecard](doc/quality-scorecard.md)
+
+### Governança de PR
+
+- Template de PR: [.github/PULL_REQUEST_TEMPLATE.md](.github/PULL_REQUEST_TEMPLATE.md)
+- Pipeline de qualidade: [.github/workflows/quality.yml](.github/workflows/quality.yml)
 
 ---
 

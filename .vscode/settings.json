@@ -8,6 +8,7 @@
         "npm run -s lint": true,
         "/bin/ls": true,
         "/usr/bin/sips": true,
-        "npm run lint": true
+        "npm run lint": true,
+        "npm install": true
     }
 }

@@ -1,30 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
 import { BackIcon, ChevronDownIcon, SearchIcon } from "@/components/icons";
 import { PokemonCard } from "@/components/pokemon-card";
 import { TabBar } from "@/components/tab-bar";
 import { useFavorites } from "@/hooks/use-favorites";
-import { sortPokemonList } from "@/lib/pokedex-service";
+import { usePokedexFilters } from "@/hooks/use-pokedex-filters";
 import type { AppConfig, PokemonCatalogItem, SortKey } from "@/lib/pokedex-types";
 
 type TypeFilter = {
   key: string;
   label: string;
   color: string;
-};
-
-const parseSortKey = (value: string): SortKey => {
-  switch (value) {
-    case "az":
-    case "za":
-    case "number-asc":
-    case "number-desc":
-      return value;
-    default:
-      return "az";
-  }
 };
 
 type PokedexListClientProps = {
@@ -37,39 +24,22 @@ type PokedexListClientProps = {
 };
 
 export function PokedexListClient({ initialCatalog, typeFilters, config, title, backHref, defaultSort = "az" }: PokedexListClientProps) {
-  const [query, setQuery] = useState("");
-  const [type, setType] = useState("all");
-  const [sort, setSort] = useState<SortKey>(defaultSort);
   const { favoriteIds, toggleFavorite } = useFavorites();
-
-  const selectedTypeColor = type !== "all"
-    ? (typeFilters.find((f) => f.key === type)?.color ?? "")
-    : "";
-
-  const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
-
-    const byType = initialCatalog.filter((pokemon) => {
-      if (type === "all") {
-        return true;
-      }
-
-      return pokemon.types.some((pokemonType) => pokemonType.key === type);
-    });
-
-    const byText = byType.filter((pokemon) => {
-      if (!normalized) {
-        return true;
-      }
-
-      return (
-        pokemon.name.toLowerCase().includes(normalized) ||
-        String(pokemon.id).includes(normalized)
-      );
-    });
-
-    return sortPokemonList(byText, sort);
-  }, [initialCatalog, query, type, sort]);
+  const {
+    query,
+    setQuery,
+    type,
+    setType,
+    sort,
+    setSort,
+    parseSortKey,
+    selectedTypeColor,
+    filtered,
+  } = usePokedexFilters({
+    initialCatalog,
+    typeFilters,
+    defaultSort,
+  });
 
   return (
     <main className="mobile-shell bg-white shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
