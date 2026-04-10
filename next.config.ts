@@ -4,6 +4,15 @@ const nextConfig: NextConfig = {
   experimental: {
     viewTransition: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "raw.githubusercontent.com",
+        pathname: "/PokeAPI/sprites/**",
+      },
+    ],
+  },
   async redirects() {
     return [
       {

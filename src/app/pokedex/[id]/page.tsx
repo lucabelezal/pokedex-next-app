@@ -10,7 +10,7 @@ import { EvoCard, EvolutionArrow } from "@/components/evolution-card";
 import { MetricCard, WeightIcon, HeightIcon, CategoryIcon, AbilityIcon, MaleIcon, FemaleIcon } from "@/components/metric-card";
 import { TabBar } from "@/components/tab-bar";
 import { TypeIcon } from "@/components/type-icon";
-import { getAppConfig, getPokemonById, getStaticPokemonParams } from "@/lib/pokedex-service";
+import { getAppConfig, getPokemonById, getStaticPokemonParams } from "@/lib/pokeapi-service";
 import type { PokemonTypeTag } from "@/lib/pokedex-types";
 
 const COLOR_MALE = "#2551C4";
@@ -28,7 +28,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const resolved = await params;
-  const pokemon = getPokemonById(Number(resolved.id));
+  const pokemon = await getPokemonById(Number(resolved.id));
 
   if (!pokemon) {
     return {
@@ -43,21 +43,23 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function PokemonDetailPage({ params }: Params) {
   const resolved = await params;
-  const pokemon = getPokemonById(Number(resolved.id));
+  const pokemon = await getPokemonById(Number(resolved.id));
   const config = getAppConfig();
 
   if (!pokemon) {
     notFound();
   }
 
-  const evolutionWithColors = pokemon.evolution.map((item) => {
-    const evoData = getPokemonById(item.id);
-    return {
-      ...item,
-      heroColor: evoData?.heroColor ?? pokemon.heroColor,
-      types: evoData?.types ?? pokemon.types,
-    };
-  });
+  const evolutionWithColors = await Promise.all(
+    pokemon.evolution.map(async (item) => {
+      const evoData = await getPokemonById(item.id);
+      return {
+        ...item,
+        heroColor: evoData?.heroColor ?? pokemon.heroColor,
+        types: evoData?.types ?? pokemon.types,
+      };
+    }),
+  );
 
   return (
     <DirectionalTransition>

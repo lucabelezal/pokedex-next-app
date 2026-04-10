@@ -6,7 +6,7 @@ import {
   getPokemonByRegion,
   getRegionByKey,
   getRegionsCatalog,
-} from "@/lib/pokedex-service";
+} from "@/lib/pokeapi-service";
 
 export const dynamic = "force-static";
 
@@ -28,7 +28,7 @@ export default async function RegionPokedexPage({ params }: Params) {
   }
 
   const config = getAppConfig();
-  const catalog = getPokemonByRegion(key);
+  const catalog = await getPokemonByRegion(key);
   const typeFilters = getAvailableTypeFilters();
 
   return (

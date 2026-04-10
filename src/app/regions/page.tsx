@@ -1,14 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { TabBar } from "@/components/tab-bar";
-import { getAppConfig, getPokemonCatalog, getRegionsCatalog } from "@/lib/pokedex-service";
+import { getAppConfig, getPokemonCatalog, getRegionsCatalog } from "@/lib/pokeapi-service";
 
 export const dynamic = "force-static";
 
-export default function RegioesPage() {
+export default async function RegioesPage() {
   const config = getAppConfig();
   const regions = getRegionsCatalog();
-  const catalog = getPokemonCatalog();
+  const catalog = await getPokemonCatalog();
 
   return (
     <main className="mobile-shell flex flex-col bg-white">
