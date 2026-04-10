@@ -1,36 +1,150 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pokédex Mobile
 
-## Getting Started
+Aplicativo mobile-first para explorar e gerenciar Pokémons, construído com Next.js App Router e React 19.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Sobre o projeto
+
+Pokédex Mobile é uma WebView/PWA que permite navegar pelo catálogo completo de Pokémons, explorar regiões, visualizar estatísticas detalhadas e gerenciar uma lista de favoritos personalizada. A interface foi projetada para uso mobile com navegação por tab bar, animações de swipe e suporte a Safe Areas.
+
+---
+
+## Design
+
+O layout foi baseado no projeto da comunidade Figma:
+
+**[Pokédex / Pokémon App — Junior Saraiva](https://www.figma.com/community/file/1202971127473077147)**
+
+---
+
+## Screenshots
+
+> Os screenshots serão adicionados em `doc/images/` conforme as telas forem finalizadas.
+
+| Splash | Pokédex | Detalhes | Favoritos |
+|--------|---------|----------|-----------|
+| _em breve_ | _em breve_ | _em breve_ | _em breve_ |
+
+---
+
+## Funcionalidades
+
+- **Splash screen** — tela de entrada com branding
+- **Onboarding** — carrossel de introdução de 2 etapas
+- **Login / Cadastro** — autenticação e criação de conta
+- **Pokédex** — listagem com filtro por tipo e busca
+- **Detalhes do Pokémon** — stats, evoluções, fraquezas e habilidades
+- **Regiões** — navegação por região (Kanto, Hoenn, etc.) com Pokémons iniciais
+- **Favoritos** — gerenciamento com swipe para deletar
+- **Perfil** — visualização e configurações do usuário
+
+---
+
+## Stack
+
+| Tecnologia | Versão |
+|-----------|--------|
+| [Next.js](https://nextjs.org) | 16.2.3 |
+| [React](https://react.dev) | 19.2.4 |
+| [Tailwind CSS](https://tailwindcss.com) | 4 |
+| TypeScript | 5 |
+
+---
+
+## Estrutura de pastas
+
+```
+pokedex-next-app/
+├── .agents/               # Agentes e skills do VS Code Copilot
+│   ├── agents/            # Agentes customizados (feature-creator, test-writer)
+│   └── skills/            # Skills instaladas (react-best-practices, etc.)
+├── doc/
+│   ├── images/            # Screenshots e assets de documentação
+│   └── resources/         # Outros recursos de documentação
+├── public/
+│   └── assets/
+│       ├── pokemon/       # Imagens dos Pokémons
+│       └── types/         # Ícones dos tipos
+└── src/
+    ├── app/               # Rotas (App Router)
+    │   ├── api/favorites/ # API REST de favoritos
+    │   ├── pokedex/       # Listagem e detalhe
+    │   ├── regioes/       # Listagem e detalhe por região
+    │   ├── favoritos/
+    │   ├── perfil/
+    │   ├── login/
+    │   ├── cadastro/
+    │   ├── onboarding/
+    │   └── splash/
+    ├── components/        # Componentes compartilhados
+    ├── data/mocks/        # Dados estáticos (JSON)
+    ├── hooks/             # Hooks customizados
+    └── lib/               # Serviços e utilitários
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Decisões de arquitetura
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Decisão | Implementação |
+|---------|--------------|
+| **Renderização** | Geração estática (`force-static`) em todas as páginas |
+| **Dados** | Mock JSON em `src/data/mocks/` (catálogo, regiões, perfil, config) |
+| **Favoritos** | `globalThis` Set no servidor + `/api/favorites` REST na sessão |
+| **Mobile-first** | Viewport sem escala, Safe Areas, Apple WebApp meta |
+| **Client / Server** | Server Components para conteúdo estático; `"use client"` para interatividade |
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Agentes de IA
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+A pasta `.agents/` contém configurações para o **GitHub Copilot** (VS Code):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Agentes customizados (`agents/`)
 
-## Deploy on Vercel
+| Agente | Descrição |
+|--------|-----------|
+| `feature-creator` | Cria features completas no padrão bulletproof-react |
+| `test-writer` | Escreve testes unitários, de integração e E2E |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Skills instaladas (`skills/`)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Skill | Descrição |
+|-------|-----------|
+| `react-best-practices` | Guia de performance React/Next.js |
+| `composition-patterns` | Padrões de composição de componentes |
+| `react-view-transitions` | Animações com a View Transition API (React 19) |
+| `tailwind-4-docs` | Documentação e migração Tailwind CSS v4 |
+| `create-component` | Criação de componentes compartilhados |
+| `create-feature` | Criação de features completas |
+| `conventional-commits` | Padrão de mensagens de commit |
+| `web-design-guidelines` | Auditoria de UI/UX e acessibilidade |
+| `write-tests` | Escrita de testes no padrão do projeto |
+
+---
+
+## Como rodar
+
+```bash
+# Instalar dependências
+npm install
+
+# Servidor de desenvolvimento
+npm run dev
+
+# Build de produção
+npm run build
+
+# Iniciar em produção
+npm start
+```
+
+Abra [http://localhost:3000](http://localhost:3000) no navegador.
+
+---
+
+## Créditos
+
+- **Design:** [Junior Saraiva — Pokédex / Pokémon App](https://www.figma.com/community/file/1202971127473077147) (Figma Community)
+- **Pokémon e marcas registradas:** © Nintendo / Game Freak / The Pokémon Company

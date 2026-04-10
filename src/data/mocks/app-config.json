@@ -45,16 +45,20 @@
 
     "signupPageTitle": "Criar conta",
     "signupWelcomeTitle": "Falta pouco para explorar esse mundo!",
-    "signupWelcomeSubtitle": "Crie sua conta para começar.",
+    "signupWelcomeSubtitle": "Como deseja se conectar?",
     "signupHasAccountLabel": "Já tem conta?",
     "signupLoginLink": "Entrar",
 
     "onboardingStep1Title": "Todos os Pokémons\nem um só Lugar",
-    "onboardingStep1Subtitle": "Pesquise, explore e descubra informações detalhadas de todos os Pokémons.",
+    "onboardingStep1Subtitle": "Acesse uma vasta lista de Pokémon de todas as gerações já feitas pela Nintendo",
     "onboardingStep1CTA": "Continuar",
     "onboardingStep2Title": "Mantenha sua\nPokédex atualizada",
-    "onboardingStep2Subtitle": "Favorite seus Pokémons preferidos e acompanhe todas as regiões e gerações.",
+    "onboardingStep2Subtitle": "Cadastre-se e mantenha seu perfil, pokémon favoritos, configurações e muito mais, salvos no aplicativo, mesmo sem conexão com a internet.",
     "onboardingStep2CTA": "Vamos começar!",
+    "onboardingStep3Title": "Está pronto para essa\naventura?",
+    "onboardingStep3Subtitle": "Basta criar uma conta e começar a explorar o mundo dos Pokémon hoje!",
+    "onboardingStep3CTA": "Criar conta",
+    "onboardingStep3SecondaryCTA": "Já tenho uma conta",
 
     "profilePageTitle": "Conta",
     "profileAccountSection": "Informações da conta",

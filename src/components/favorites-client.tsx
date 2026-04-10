@@ -45,7 +45,7 @@ export function FavoritesClient({ config, catalog }: FavoritesClientProps) {
             <h2 className="mt-5 text-[24px] font-black leading-[1.1] tracking-[-0.02em] text-[#2f3035]">
               {config.texts.favoritesEmptyTitle}
             </h2>
-            <p className="mt-3 max-w-[280px] text-[15px] leading-[1.5] text-[#5f6066]">
+            <p className="mt-3 max-w-[280px] text-[16px] leading-[1.5] text-[#5f6066]">
               {config.texts.favoritesEmptyDescription}
             </p>
           </div>

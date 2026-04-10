@@ -20,7 +20,7 @@ function SettingsRow({
   return (
     <div className="flex items-center justify-between px-4 py-3.5">
       <span
-        className="text-[15px] font-medium"
+        className="text-[16px] font-medium"
         style={{ color: danger ? "#e03535" : "#1f2024" }}
       >
         {label}
@@ -53,7 +53,7 @@ function SettingsToggleRow({
 }) {
   return (
     <div className="flex items-center justify-between px-4 py-3.5">
-      <span className="text-[15px] font-medium text-[#1f2024]">{label}</span>
+      <span className="text-[16px] font-medium text-[#1f2024]">{label}</span>
       <div
         className="h-[28px] w-[48px] rounded-full p-[2px] transition-colors"
         style={{ backgroundColor: enabled ? "#173EA5" : "#d0d2d8" }}
@@ -101,7 +101,7 @@ export default function PerfilPage() {
           </div>
           <div>
             <p className="text-[18px] font-bold text-[#1f2024]">{userProfile.username}</p>
-            <p className="text-[13px] text-[#8a8c91]">{userProfile.email}</p>
+            <p className="text-[12px] text-[#8a8c91]">{userProfile.email}</p>
           </div>
         </div>
       </header>
@@ -137,8 +137,8 @@ export default function PerfilPage() {
 
         <SettingsSection title={t.profileOthersSection}>
           <div className="px-4 py-3.5">
-            <p className="text-[15px] font-semibold text-[#e03535]">{t.profileLogoutLabel}</p>
-            <p className="mt-0.5 text-[13px] text-[#8a8c91]">{t.profileLogoutSubtitle.replace("{name}", userProfile.displayName)}</p>
+            <p className="text-[16px] font-semibold text-[#e03535]">{t.profileLogoutLabel}</p>
+            <p className="mt-0.5 text-[12px] text-[#8a8c91]">{t.profileLogoutSubtitle.replace("{name}", userProfile.displayName)}</p>
           </div>
         </SettingsSection>
       </div>

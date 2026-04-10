@@ -26,8 +26,8 @@ export default function RegioesPage() {
             return (
               <Link
                 key={region.key}
-                href={`/regioes/${region.key}`}
-                className="relative block h-[110px] overflow-hidden rounded-[20px]"
+                href={`/regions/${region.key}`}
+                className="relative block h-[110px] overflow-hidden rounded-[24px]"
               >
                 <div
                   className="absolute inset-0"
@@ -37,7 +37,7 @@ export default function RegioesPage() {
 
                 <div className="relative flex h-full items-end justify-between px-5 pb-1">
                   <div className="flex flex-col justify-center pb-2">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-white/70">
+                    <p className="text-[12px] font-bold uppercase tracking-[0.12em] text-white/70">
                       {region.generation}
                     </p>
                     <h2 className="text-[28px] font-black leading-[1.1] tracking-[-0.02em] text-white">
@@ -46,15 +46,15 @@ export default function RegioesPage() {
                   </div>
 
                   {starters.length > 0 && (
-                    <div className="flex items-end gap-1">
+                    <div className="flex items-end gap-0">
                       {starters.map((pokemon) => (
                         <Image
                           key={pokemon.id}
                           src={pokemon.image}
                           alt={pokemon.name}
-                          width={70}
-                          height={70}
-                          className="h-[70px] w-[70px] object-contain drop-shadow-md"
+                          width={56}
+                          height={56}
+                          className="h-[56px] w-[56px] object-contain drop-shadow-md"
                         />
                       ))}
                     </div>

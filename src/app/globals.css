@@ -21,7 +21,7 @@ body {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   -webkit-tap-highlight-color: transparent;
-  overscroll-behavior-y: contain;
+  overscroll-behavior-y: none;
 }
 
 * {
@@ -32,6 +32,7 @@ html,
 body {
   width: 100%;
   min-height: 100%;
+  overscroll-behavior-y: none;
 }
 
 input,
@@ -51,12 +52,200 @@ button {
   border-right: 1px solid #d8d9dd;
 }
 
+.no-pull-refresh {
+  overscroll-behavior-y: none;
+}
+
 .tab-shell {
   backdrop-filter: blur(8px);
+}
+
+.back-glass-btn {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 20px rgba(20, 24, 40, 0.12);
+}
+
+.ios-liquid-btn {
+  backdrop-filter: saturate(170%) blur(14px);
+  -webkit-backdrop-filter: saturate(170%) blur(14px);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.16) 100%),
+    rgba(20, 24, 40, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    0 10px 24px rgba(16, 20, 36, 0.2);
+}
+
+.ios-liquid-btn:active {
+  transform: scale(0.98);
+}
+
+@keyframes splash-logo-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.92);
+    filter: blur(3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes splash-logo-float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    transform: translateY(-2px) scale(1.015);
+  }
+}
+
+.splash-logo-wrap {
+  animation: splash-logo-enter 520ms ease-out both;
+}
+
+.splash-logo {
+  animation: splash-logo-float 2400ms ease-in-out 560ms infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+
+@keyframes onboarding-slide-in-forward {
+  from {
+    opacity: 0;
+    transform: translateX(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes onboarding-slide-in-back {
+  from {
+    opacity: 0;
+    transform: translateX(-22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.onboarding-slide {
+  will-change: transform, opacity;
+}
+
+.onboarding-slide-forward {
+  animation: onboarding-slide-in-forward 220ms ease-out both;
+}
+
+.onboarding-slide-back {
+  animation: onboarding-slide-in-back 220ms ease-out both;
 }
 
 @supports not (height: 100dvh) {
   .mobile-shell {
     min-height: 100vh;
+  }
+}
+
+/* ─── View Transition — timing ─────────────────────────────────────── */
+:root {
+  --duration-exit: 150ms;
+  --duration-enter: 210ms;
+  --duration-move: 400ms;
+}
+
+/* ─── View Transition — keyframes ──────────────────────────────────── */
+@keyframes fade {
+  from { filter: blur(3px); opacity: 0; }
+  to   { filter: blur(0);   opacity: 1; }
+}
+
+@keyframes slide {
+  from { translate: var(--slide-offset); }
+  to   { translate: 0; }
+}
+
+/* ─── View Transition — fade ────────────────────────────────────────── */
+::view-transition-old(.fade-out) {
+  animation: var(--duration-exit) ease-in fade reverse;
+}
+::view-transition-new(.fade-in) {
+  animation: var(--duration-enter) ease-out var(--duration-exit) both fade;
+}
+
+/* ─── View Transition — navegação direcional ────────────────────────── */
+::view-transition-old(.nav-forward) {
+  --slide-offset: -60px;
+  animation:
+    var(--duration-exit) ease-in both fade reverse,
+    var(--duration-move) ease-in-out both slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --slide-offset: 60px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both fade,
+    var(--duration-move) ease-in-out both slide;
+}
+
+::view-transition-old(.nav-back) {
+  --slide-offset: 60px;
+  animation:
+    var(--duration-exit) ease-in both fade reverse,
+    var(--duration-move) ease-in-out both slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-offset: -60px;
+  animation:
+    var(--duration-enter) ease-out var(--duration-exit) both fade,
+    var(--duration-move) ease-in-out both slide;
+}
+
+/* ─── View Transition — shared element morph ────────────────────────── */
+::view-transition-group(.morph) {
+  animation-duration: var(--duration-move);
+}
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+@keyframes via-blur {
+  30% { filter: blur(3px); }
+}
+
+/* ─── View Transition — tab bar (persistente, backdrop-blur workaround) */
+::view-transition-old(tab-bar) {
+  display: none;
+}
+::view-transition-new(tab-bar) {
+  animation: none;
+}
+
+/* ─── View Transition — reduced motion ──────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .splash-logo-wrap,
+  .splash-logo,
+  .onboarding-slide-forward,
+  .onboarding-slide-back {
+    animation: none !important;
+  }
+
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
   }
 }

@@ -22,9 +22,9 @@ type Tab = {
 
 const tabs: Tab[] = [
   { href: "/pokedex", label: "Pokédex", ActiveIcon: PokedexActiveIcon, InactiveIcon: PokedexIcon },
-  { href: "/regioes", label: "Regiões", ActiveIcon: RegionActiveIcon, InactiveIcon: RegionIcon },
-  { href: "/favoritos", label: "Favoritos", ActiveIcon: HeartActiveIcon, InactiveIcon: (p) => <HeartIcon {...p} filled={false} /> },
-  { href: "/perfil", label: "Conta", ActiveIcon: ContaActiveIcon, InactiveIcon: UserIcon },
+  { href: "/regions", label: "Regiões", ActiveIcon: RegionActiveIcon, InactiveIcon: RegionIcon },
+  { href: "/favorites", label: "Favoritos", ActiveIcon: HeartActiveIcon, InactiveIcon: (p) => <HeartIcon {...p} filled={false} /> },
+  { href: "/profile", label: "Conta", ActiveIcon: ContaActiveIcon, InactiveIcon: UserIcon },
 ];
 
 export function TabBar() {
@@ -33,7 +33,7 @@ export function TabBar() {
   return (
     <>
       <div aria-hidden className="h-[calc(68px+env(safe-area-inset-bottom))]" />
-      <nav className="tab-shell fixed bottom-0 left-1/2 z-40 w-full max-w-[430px] -translate-x-1/2 border-x border-t border-[#d7d7d7] bg-[#f6f6f6] pb-[calc(8px+env(safe-area-inset-bottom))] pt-2">
+      <nav className="tab-shell fixed bottom-0 left-1/2 z-40 w-full max-w-[430px] -translate-x-1/2 border-x border-t border-[#d7d7d7] bg-[#f6f6f6] pb-[calc(8px+env(safe-area-inset-bottom))] pt-2" style={{ viewTransitionName: "tab-bar" }}>
         <ul className="mx-auto flex items-center justify-around px-4">
           {tabs.map(({ href, label, ActiveIcon, InactiveIcon }) => {
             const active = pathname === href || pathname.startsWith(`${href}/`);
@@ -54,7 +54,7 @@ export function TabBar() {
                     />
                   )}
                   <span
-                    className="text-[13px] font-semibold"
+                    className="text-[12px] font-semibold"
                     style={{ color: active ? "#1d4fd7" : "#8f9094" }}
                   >
                     {label}

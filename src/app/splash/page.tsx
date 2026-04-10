@@ -1,24 +1,48 @@
-import Link from "next/link";
-import { Lilita_One } from "next/font/google";
+"use client";
 
-const lilitaOne = Lilita_One({
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-export const dynamic = "force-static";
+import Image from "next/image";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SplashPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const jaViuOnboarding = localStorage.getItem("onboarding_done");
+      if (jaViuOnboarding) {
+        router.replace("/pokedex");
+      } else {
+        router.replace("/onboarding");
+      }
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [router]);
+
   return (
-    <Link
-      href="/onboarding"
-      className="mobile-shell flex items-center justify-center bg-[#060A1E]"
+    <main
+      className="flex min-h-[100dvh] w-full items-center justify-center overflow-hidden"
+      style={{
+        backgroundColor: "#060A1E",
+        paddingTop: "env(safe-area-inset-top)",
+        paddingRight: "env(safe-area-inset-right)",
+        paddingBottom: "env(safe-area-inset-bottom)",
+        paddingLeft: "env(safe-area-inset-left)",
+      }}
+      aria-label="Tela de splash"
     >
-      <h1 className={`${lilitaOne.className} text-[56px] leading-none`}>
-        <span className="text-white">Poké</span>
-        <span className="text-[#CD3131]">dex</span>
-      </h1>
-    </Link>
+      <div className="splash-logo-wrap" style={{ transform: "translateY(8px)" }}>
+        <Image
+          src="/assets/branding/pokedex-logo.svg"
+          alt="Pokédex"
+          width={393}
+          height={123}
+          priority
+          className="splash-logo h-auto w-[280px]"
+        />
+      </div>
+    </main>
   );
 }
+

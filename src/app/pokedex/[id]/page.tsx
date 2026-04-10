@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BackIcon } from "@/components/icons";
 import { DetailFavoriteToggle } from "@/components/detail-favorite-toggle";
+import { DirectionalTransition } from "@/components/directional-transition";
 import { ElementoOutline } from "@/components/elemento-outline";
 import { TabBar } from "@/components/tab-bar";
 import { TypeIcon } from "@/components/type-icon";
@@ -52,13 +53,14 @@ export default async function PokemonDetailPage({ params }: Params) {
   });
 
   return (
+    <DirectionalTransition>
     <main className="mobile-shell flex flex-col bg-white">
       {/* HERO wrapper — permite que o pokémon vaze sobre o card */}
       <div className="relative flex-1 bg-white">
         {/* HERO */}
         <section
           className="relative overflow-hidden bg-white"
-          style={{ height: "304px" }}
+          style={{ height: "calc(304px + env(safe-area-inset-top))" }}
         >
           {/* Círculo colorido — heroColor sobre fundo branco cria o domo */}
           <div
@@ -84,14 +86,15 @@ export default async function PokemonDetailPage({ params }: Params) {
           {/* Icons bar */}
           <div
             className="absolute left-4 right-4 flex items-center justify-between"
-            style={{ top: "19px" }}
+            style={{ top: "calc(19px + env(safe-area-inset-top))" }}
           >
             <Link
               href="/pokedex"
               aria-label="Voltar para a lista"
-              className="flex h-[38px] w-[38px] items-center justify-center rounded-full text-white"
+              className="ios-liquid-btn flex h-10 w-10 items-center justify-center rounded-full text-white transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              transitionTypes={["nav-back"]}
             >
-              <BackIcon className="h-[38px] w-[38px]" />
+              <BackIcon className="h-5 w-5" />
             </Link>
             <DetailFavoriteToggle id={pokemon.id} name={pokemon.name} />
           </div>
@@ -108,14 +111,15 @@ export default async function PokemonDetailPage({ params }: Params) {
             width: "224px",
             height: "224px",
             left: "50%",
-            top: "192px",
+            top: "calc(192px + env(safe-area-inset-top))",
             transform: "translate(-50%, -50%)",
+            viewTransitionName: `pokemon-img-${pokemon.id}`,
           }}
           priority
         />
 
       {/* CONTENT CARD */}
-      <section className="rounded-t-[34px] bg-white px-4 pb-28 pt-[32px]">
+      <section className="rounded-t-[32px] bg-white px-4 pb-28 pt-[32px]">
         {/* Nome + Número */}
         <h1
           className="text-[32px] font-bold leading-[48px] text-black"
@@ -128,7 +132,7 @@ export default async function PokemonDetailPage({ params }: Params) {
         </p>
 
         {/* Type badges */}
-        <div className="mt-3 flex flex-wrap gap-[7px]">
+        <div className="mt-3 flex flex-wrap gap-[8px]">
           {pokemon.types.map((type) => (
             <TypeBadgeDetail key={type.key} type={type} />
           ))}
@@ -172,11 +176,11 @@ export default async function PokemonDetailPage({ params }: Params) {
             />
           </div>
           <div className="mt-1.5 flex items-center justify-between">
-            <span className="flex items-center gap-[3px] text-[12px] font-medium uppercase text-black/70">
+            <span className="flex items-center gap-[4px] text-[12px] font-medium uppercase text-black/70">
               <MaleIcon />
               {pokemon.gender.male}%
             </span>
-            <span className="flex items-center gap-[3px] text-[12px] font-medium uppercase text-black/70">
+            <span className="flex items-center gap-[4px] text-[12px] font-medium uppercase text-black/70">
               <FemaleIcon />
               {pokemon.gender.female}%
             </span>
@@ -200,7 +204,7 @@ export default async function PokemonDetailPage({ params }: Params) {
           <h2 className="text-[18px] font-bold leading-[27px] text-black">
             {config.texts.evolutionsLabel}
           </h2>
-          <div className="mt-2 rounded-[15px] border border-[#E6E6E6] px-4 py-6">
+          <div className="mt-2 rounded-[16px] border border-[#E6E6E6] px-4 py-6">
             <div className="flex flex-col items-center gap-2">
               {evolutionWithColors.map((item, index) => (
                 <div key={`evo-${item.id}-${index}`} className="w-full">
@@ -225,6 +229,7 @@ export default async function PokemonDetailPage({ params }: Params) {
 
       <TabBar />
     </main>
+    </DirectionalTransition>
   );
 }
 
@@ -233,7 +238,7 @@ export default async function PokemonDetailPage({ params }: Params) {
 function TypeBadgeDetail({ type }: { type: PokemonTypeTag }) {
   return (
     <div
-      className="inline-flex h-[36px] items-center gap-2 rounded-[67px] px-[14px]"
+      className="inline-flex h-[36px] items-center gap-2 rounded-[64px] px-[16px]"
       style={{ backgroundColor: type.color }}
     >
       <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-white">
@@ -247,7 +252,7 @@ function TypeBadgeDetail({ type }: { type: PokemonTypeTag }) {
 function TypeBadgeWide({ type }: { type: PokemonTypeTag }) {
   return (
     <div
-      className="flex h-[36px] items-center justify-center gap-2 rounded-[67px] px-[14px]"
+      className="flex h-[36px] items-center justify-center gap-2 rounded-[64px] px-[16px]"
       style={{ backgroundColor: type.color }}
     >
       <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-white">
@@ -269,7 +274,7 @@ function MetricCard({
 }) {
   return (
     <div className="flex flex-1 flex-col gap-1">
-      <div className="flex items-center gap-[6px]">
+      <div className="flex items-center gap-[8px]">
         <span className="flex h-4 w-4 items-center justify-center text-black/60">
           <MetricIcon type={icon} />
         </span>
@@ -277,7 +282,7 @@ function MetricCard({
           {label}
         </span>
       </div>
-      <div className="flex h-[43px] w-full items-center justify-center rounded-[15px] border border-black/10">
+      <div className="flex h-[43px] w-full items-center justify-center rounded-[16px] border border-black/10">
         <span className="text-[18px] font-medium text-black/90">{value}</span>
       </div>
     </div>
@@ -360,7 +365,7 @@ type EvoItem = {
 
 function EvoCard({ item }: { item: EvoItem }) {
   return (
-    <div className="relative h-[76px] overflow-hidden rounded-[90px] border border-[#E6E6E6]">
+    <div className="relative h-[76px] overflow-hidden rounded-[64px] border border-[#E6E6E6]">
       {/* Imagem com fundo colorido */}
       <div
         className="absolute"
@@ -368,7 +373,7 @@ function EvoCard({ item }: { item: EvoItem }) {
       >
         {/* Círculo colorido */}
         <div
-          className="absolute rounded-[71px]"
+          className="absolute rounded-[64px]"
           style={{
             width: "95px",
             height: "74px",
@@ -422,7 +427,7 @@ function EvoCard({ item }: { item: EvoItem }) {
 function TypePillEvo({ type }: { type: PokemonTypeTag }) {
   return (
     <div
-      className="flex h-[13px] w-[68px] items-center justify-center rounded-[20px]"
+      className="flex h-[13px] w-[68px] items-center justify-center rounded-[24px]"
       style={{ backgroundColor: type.color }}
     >
       <ElementoOutline typeKey={type.key} className="h-[10px] w-[10px]" />

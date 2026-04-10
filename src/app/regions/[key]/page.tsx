@@ -37,7 +37,7 @@ export default async function RegionPokedexPage({ params }: Params) {
       typeFilters={typeFilters}
       config={config}
       title={region.name}
-      backHref="/regioes"
+      backHref="/regions"
       defaultSort="number-asc"
     />
   );

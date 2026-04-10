@@ -19,10 +19,10 @@ function AuthButton({
   return (
     <button
       type="button"
-      className={`flex h-[56px] w-full items-center justify-center gap-4 rounded-full border px-6 text-[16px] font-medium tracking-[-0.01em] transition-colors ${
+      className={`flex h-[56px] w-full items-center justify-center gap-4 rounded-full px-6 text-[16px] font-medium tracking-[-0.01em] transition-colors ${
         isSolid
-          ? "border-[#173EA5] bg-[#173EA5] text-white hover:bg-[#143693] active:bg-[#102c78]"
-          : "border-[#c8cad1] bg-transparent text-[#515357] hover:bg-[#f1f2f4] active:bg-[#e8eaee]"
+          ? "border border-[#173EA5] bg-[#173EA5] text-white hover:bg-[#143693] active:bg-[#102c78]"
+          : "border border-[#c8cad1] bg-transparent text-[#515357] hover:bg-[#f1f2f4] active:bg-[#e8eaee]"
       }`}
     >
       <span className="flex h-8 w-8 items-center justify-center">{icon}</span>
@@ -31,7 +31,7 @@ function AuthButton({
   );
 }
 
-export default function LoginPage() {
+export default function CadastroPage() {
   const t = getAppConfig().texts;
 
   return (
@@ -45,7 +45,7 @@ export default function LoginPage() {
           <BackIcon className="h-5 w-5 text-[#1f2024]" />
         </Link>
         <h1 className="text-center text-[24px] font-medium tracking-[-0.01em] text-[#1f2024]">
-          {t.loginPageTitle}
+          {t.signupPageTitle}
         </h1>
         <span aria-hidden="true" />
       </header>
@@ -53,17 +53,16 @@ export default function LoginPage() {
       <div className="flex flex-1 flex-col overflow-y-auto px-8 pb-[calc(32px+env(safe-area-inset-bottom))] pt-4">
         <div className="mx-auto mb-6 flex h-[clamp(220px,34vh,280px)] w-full max-w-[320px] items-center justify-center">
           <Image
-            src="/assets/login/login-trainer.svg"
-            alt="Treinador Pokémon"
-            width={284}
+            src="/assets/cadastro/cadastro-trainer.svg"
+            alt="Treinadora Pokémon"
+            width={266}
             height={288}
             className="h-full w-auto object-contain"
             priority
           />
         </div>
-
         <h2 className="mx-auto max-w-[320px] text-center text-[24px] font-medium leading-[1.2] tracking-[-0.02em] text-[#1f2024] text-pretty">
-          {t.loginWelcomeTitle}
+          {t.signupWelcomeTitle}
         </h2>
         <p className="mx-auto mt-4 max-w-[320px] text-center text-[16px] font-medium leading-[24px] tracking-[-0.01em] text-[#6d6e73] text-pretty">
           {t.signupWelcomeSubtitle}

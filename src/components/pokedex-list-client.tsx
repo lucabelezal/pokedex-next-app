@@ -81,7 +81,7 @@ export function PokedexListClient({ initialCatalog, typeFilters, config, title, 
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder={config.texts.searchPlaceholder}
-            className="h-12 w-full rounded-[30px] border-[1.5px] border-[#cccccc] bg-white pl-12 pr-4 text-[14px] font-normal leading-[21px] text-[#333333] outline-none placeholder:text-[#999999]"
+            className="h-12 w-full rounded-[32px] border-[1.5px] border-[#cccccc] bg-white pl-12 pr-4 text-[14px] font-normal leading-[21px] text-[#333333] outline-none placeholder:text-[#999999]"
             autoComplete="off"
           />
         </label>
@@ -91,7 +91,7 @@ export function PokedexListClient({ initialCatalog, typeFilters, config, title, 
             <select
               value={type}
               onChange={(event) => setType(event.target.value)}
-              className="h-[42px] w-full appearance-none rounded-[49px] px-4 pr-9 text-[14px] font-semibold leading-[21px] text-white outline-none transition-colors"
+              className="h-[42px] w-full appearance-none rounded-[48px] px-4 pr-9 text-[14px] font-semibold leading-[21px] text-white outline-none transition-colors"
               style={{ backgroundColor: selectedTypeColor || "#333333" }}
             >
               {typeFilters.map((option) => (
@@ -107,7 +107,7 @@ export function PokedexListClient({ initialCatalog, typeFilters, config, title, 
             <select
               value={sort}
               onChange={(event) => setSort(event.target.value as SortKey)}
-              className="h-[42px] w-full appearance-none rounded-[49px] bg-[#333333] px-4 pr-9 text-[14px] font-semibold leading-[21px] text-white outline-none"
+              className="h-[42px] w-full appearance-none rounded-[48px] bg-[#333333] px-4 pr-9 text-[14px] font-semibold leading-[21px] text-white outline-none"
             >
               <option value="az">{config.texts.sortAzLabel}</option>
               <option value="za">{config.texts.sortZaLabel}</option>

@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Pokédex Mobile",
   description: "MVP mobile para WebView com lista, detalhe e favoritos.",
   applicationName: "Pokédex",
+  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
