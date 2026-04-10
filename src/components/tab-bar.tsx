@@ -45,16 +45,18 @@ export function TabBar() {
                   className="flex w-[76px] flex-col items-center gap-1 py-1"
                   aria-current={active ? "page" : undefined}
                 >
-                  {active ? (
-                    <ActiveIcon className="h-6 w-6" />
-                  ) : (
-                    <InactiveIcon
-                      className="h-6 w-6"
-                      style={{ color: "#8f9094" }}
-                    />
-                  )}
+                  <span className="flex h-6 w-6 items-center justify-center">
+                    {active ? (
+                      <ActiveIcon className="h-full w-full" />
+                    ) : (
+                      <InactiveIcon
+                        className="h-full w-full"
+                        style={{ color: "#8f9094" }}
+                      />
+                    )}
+                  </span>
                   <span
-                    className="text-[12px] font-semibold"
+                    className="min-h-4 text-[12px] font-semibold leading-4"
                     style={{ color: active ? "#1d4fd7" : "#8f9094" }}
                   >
                     {label}
