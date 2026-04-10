@@ -1,0 +1,579 @@
+[
+  {
+    "id": 1,
+    "name": "Bulbasaur",
+    "slug": "bulbasaur",
+    "number": "N°001",
+    "image": "/assets/pokemon/bulbasaur.png",
+    "cardColor": "#dce3d6",
+    "heroColor": "#6ec06b",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "grass", "label": "Grama", "color": "#57b956", "textColor": "#111111" },
+      { "key": "poison", "label": "Venenoso", "color": "#b466d8", "textColor": "#111111" }
+    ],
+    "description": "Há uma semente de planta nas costas desde o dia em que este Pokémon nasce. A semente cresce lentamente.",
+    "weight": "6,9 kg",
+    "height": "0,7 m",
+    "category": "Seed",
+    "ability": "Overgrow",
+    "gender": { "male": 87.5, "female": 12.5 },
+    "weaknesses": [
+      { "key": "fire", "label": "Fogo", "color": "#f39b52", "textColor": "#111111" },
+      { "key": "psychic", "label": "Psíquico", "color": "#f06e7a", "textColor": "#111111" },
+      { "key": "flying", "label": "Voador", "color": "#7faae6", "textColor": "#111111" },
+      { "key": "ice", "label": "Gelo", "color": "#72ccc4", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 1, "name": "Bulbasaur", "number": "N°001", "image": "/assets/pokemon/bulbasaur.png", "level": null },
+      { "id": 2, "name": "Ivysaur", "number": "N°002", "image": "/assets/pokemon/ivysaur.png", "level": "Nível 16" },
+      { "id": 3, "name": "Venusaur", "number": "N°003", "image": "/assets/pokemon/venusaur.png", "level": "Nível 36" }
+    ]
+  },
+  {
+    "id": 2,
+    "name": "Ivysaur",
+    "slug": "ivysaur",
+    "number": "N°002",
+    "image": "/assets/pokemon/ivysaur.png",
+    "cardColor": "#dce3d6",
+    "heroColor": "#6ec06b",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "grass", "label": "Grama", "color": "#57b956", "textColor": "#111111" },
+      { "key": "poison", "label": "Venenoso", "color": "#b466d8", "textColor": "#111111" }
+    ],
+    "description": "Quando o bulbo em suas costas cresce, parece perder a habilidade de ficar em pé sobre as patas traseiras.",
+    "weight": "13,0 kg",
+    "height": "1,0 m",
+    "category": "Seed",
+    "ability": "Overgrow",
+    "gender": { "male": 87.5, "female": 12.5 },
+    "weaknesses": [
+      { "key": "fire", "label": "Fogo", "color": "#f39b52", "textColor": "#111111" },
+      { "key": "psychic", "label": "Psíquico", "color": "#f06e7a", "textColor": "#111111" },
+      { "key": "flying", "label": "Voador", "color": "#7faae6", "textColor": "#111111" },
+      { "key": "ice", "label": "Gelo", "color": "#72ccc4", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 1, "name": "Bulbasaur", "number": "N°001", "image": "/assets/pokemon/bulbasaur.png", "level": null },
+      { "id": 2, "name": "Ivysaur", "number": "N°002", "image": "/assets/pokemon/ivysaur.png", "level": "Nível 16" },
+      { "id": 3, "name": "Venusaur", "number": "N°003", "image": "/assets/pokemon/venusaur.png", "level": "Nível 36" }
+    ]
+  },
+  {
+    "id": 3,
+    "name": "Venusaur",
+    "slug": "venusaur",
+    "number": "N°003",
+    "image": "/assets/pokemon/venusaur.png",
+    "cardColor": "#dce3d6",
+    "heroColor": "#6ec06b",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "grass", "label": "Grama", "color": "#57b956", "textColor": "#111111" },
+      { "key": "poison", "label": "Venenoso", "color": "#b466d8", "textColor": "#111111" }
+    ],
+    "description": "A planta floresce quando absorve energia solar. Ela está sempre procurando ficar sob o sol.",
+    "weight": "100,0 kg",
+    "height": "2,0 m",
+    "category": "Seed",
+    "ability": "Overgrow",
+    "gender": { "male": 87.5, "female": 12.5 },
+    "weaknesses": [
+      { "key": "fire", "label": "Fogo", "color": "#f39b52", "textColor": "#111111" },
+      { "key": "psychic", "label": "Psíquico", "color": "#f06e7a", "textColor": "#111111" },
+      { "key": "flying", "label": "Voador", "color": "#7faae6", "textColor": "#111111" },
+      { "key": "ice", "label": "Gelo", "color": "#72ccc4", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 1, "name": "Bulbasaur", "number": "N°001", "image": "/assets/pokemon/bulbasaur.png", "level": null },
+      { "id": 2, "name": "Ivysaur", "number": "N°002", "image": "/assets/pokemon/ivysaur.png", "level": "Nível 16" },
+      { "id": 3, "name": "Venusaur", "number": "N°003", "image": "/assets/pokemon/venusaur.png", "level": "Nível 36" }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Charmander",
+    "slug": "charmander",
+    "number": "N°004",
+    "image": "/assets/pokemon/charmander.png",
+    "cardColor": "#e9e0d9",
+    "heroColor": "#f39b52",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "fire", "label": "Fogo", "color": "#f39b52", "textColor": "#111111" }
+    ],
+    "description": "A chama na ponta da cauda indica suas emoções. Se estiver saudável, a chama queima intensamente.",
+    "weight": "8,5 kg",
+    "height": "0,6 m",
+    "category": "Lizard",
+    "ability": "Blaze",
+    "gender": { "male": 87.5, "female": 12.5 },
+    "weaknesses": [
+      { "key": "water", "label": "Água", "color": "#79a8e5", "textColor": "#111111" },
+      { "key": "ground", "label": "Terrestre", "color": "#c9763e", "textColor": "#111111" },
+      { "key": "rock", "label": "Pedra", "color": "#b9aa7f", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 4, "name": "Charmander", "number": "N°004", "image": "/assets/pokemon/charmander.png", "level": null },
+      { "id": 5, "name": "Charmeleon", "number": "N°005", "image": "/assets/pokemon/charmeleon.png", "level": "Nível 16" },
+      { "id": 6, "name": "Charizard", "number": "N°006", "image": "/assets/pokemon/charizard.png", "level": "Nível 36" }
+    ]
+  },
+  {
+    "id": 5,
+    "name": "Charmeleon",
+    "slug": "charmeleon",
+    "number": "N°005",
+    "image": "/assets/pokemon/charmeleon.png",
+    "cardColor": "#e9e0d9",
+    "heroColor": "#f39b52",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "fire", "label": "Fogo", "color": "#f39b52", "textColor": "#111111" }
+    ],
+    "description": "Quando balança sua cauda ardente, eleva a temperatura ao redor para níveis muito altos.",
+    "weight": "19,0 kg",
+    "height": "1,1 m",
+    "category": "Flame",
+    "ability": "Blaze",
+    "gender": { "male": 87.5, "female": 12.5 },
+    "weaknesses": [
+      { "key": "water", "label": "Água", "color": "#79a8e5", "textColor": "#111111" },
+      { "key": "ground", "label": "Terrestre", "color": "#c9763e", "textColor": "#111111" },
+      { "key": "rock", "label": "Pedra", "color": "#b9aa7f", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 4, "name": "Charmander", "number": "N°004", "image": "/assets/pokemon/charmander.png", "level": null },
+      { "id": 5, "name": "Charmeleon", "number": "N°005", "image": "/assets/pokemon/charmeleon.png", "level": "Nível 16" },
+      { "id": 6, "name": "Charizard", "number": "N°006", "image": "/assets/pokemon/charizard.png", "level": "Nível 36" }
+    ]
+  },
+  {
+    "id": 6,
+    "name": "Charizard",
+    "slug": "charizard",
+    "number": "N°006",
+    "image": "/assets/pokemon/charizard.png",
+    "cardColor": "#e9e0d9",
+    "heroColor": "#f39b52",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "fire", "label": "Fogo", "color": "#f39b52", "textColor": "#111111" },
+      { "key": "flying", "label": "Voador", "color": "#7faae6", "textColor": "#111111" }
+    ],
+    "description": "Cospe fogo tão quente que pode derreter pedras. Causa incêndios florestais sem intenção.",
+    "weight": "90,5 kg",
+    "height": "1,7 m",
+    "category": "Flame",
+    "ability": "Blaze",
+    "gender": { "male": 87.5, "female": 12.5 },
+    "weaknesses": [
+      { "key": "water", "label": "Água", "color": "#79a8e5", "textColor": "#111111" },
+      { "key": "electric", "label": "Elétrico", "color": "#e9cd2c", "textColor": "#111111" },
+      { "key": "rock", "label": "Pedra", "color": "#b9aa7f", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 4, "name": "Charmander", "number": "N°004", "image": "/assets/pokemon/charmander.png", "level": null },
+      { "id": 5, "name": "Charmeleon", "number": "N°005", "image": "/assets/pokemon/charmeleon.png", "level": "Nível 16" },
+      { "id": 6, "name": "Charizard", "number": "N°006", "image": "/assets/pokemon/charizard.png", "level": "Nível 36" }
+    ]
+  },
+  {
+    "id": 7,
+    "name": "Squirtle",
+    "slug": "squirtle",
+    "number": "N°007",
+    "image": "/assets/pokemon/squirtle.png",
+    "cardColor": "#d7dde5",
+    "heroColor": "#4d8dd9",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "water", "label": "Água", "color": "#4d8dd9", "textColor": "#111111" }
+    ],
+    "description": "Após nascer, suas costas incham e endurecem em uma carapaça. Ele dispara espuma pela boca.",
+    "weight": "9,0 kg",
+    "height": "0,5 m",
+    "category": "Tiny Turtle",
+    "ability": "Torrent",
+    "gender": { "male": 87.5, "female": 12.5 },
+    "weaknesses": [
+      { "key": "electric", "label": "Elétrico", "color": "#e9cd2c", "textColor": "#111111" },
+      { "key": "grass", "label": "Grama", "color": "#57b956", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 7, "name": "Squirtle", "number": "N°007", "image": "/assets/pokemon/squirtle.png", "level": null },
+      { "id": 8, "name": "Wartortle", "number": "N°008", "image": "/assets/pokemon/wartortle.png", "level": "Nível 16" },
+      { "id": 9, "name": "Blastoise", "number": "N°009", "image": "/assets/pokemon/blastoise.png", "level": "Nível 36" }
+    ]
+  },
+  {
+    "id": 8,
+    "name": "Wartortle",
+    "slug": "wartortle",
+    "number": "N°008",
+    "image": "/assets/pokemon/wartortle.png",
+    "cardColor": "#d7dde5",
+    "heroColor": "#4d8dd9",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "water", "label": "Água", "color": "#4d8dd9", "textColor": "#111111" }
+    ],
+    "description": "É reconhecido como símbolo de longevidade. Sua cauda peluda é popular entre pessoas idosas.",
+    "weight": "22,5 kg",
+    "height": "1,0 m",
+    "category": "Turtle",
+    "ability": "Torrent",
+    "gender": { "male": 87.5, "female": 12.5 },
+    "weaknesses": [
+      { "key": "electric", "label": "Elétrico", "color": "#e9cd2c", "textColor": "#111111" },
+      { "key": "grass", "label": "Grama", "color": "#57b956", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 7, "name": "Squirtle", "number": "N°007", "image": "/assets/pokemon/squirtle.png", "level": null },
+      { "id": 8, "name": "Wartortle", "number": "N°008", "image": "/assets/pokemon/wartortle.png", "level": "Nível 16" },
+      { "id": 9, "name": "Blastoise", "number": "N°009", "image": "/assets/pokemon/blastoise.png", "level": "Nível 36" }
+    ]
+  },
+  {
+    "id": 9,
+    "name": "Blastoise",
+    "slug": "blastoise",
+    "number": "N°009",
+    "image": "/assets/pokemon/blastoise.png",
+    "cardColor": "#d7dde5",
+    "heroColor": "#4d8dd9",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "water", "label": "Água", "color": "#4d8dd9", "textColor": "#111111" }
+    ],
+    "description": "Dispara jatos de água de altíssima pressão. Seus canhões podem perfurar aço grosso.",
+    "weight": "85,5 kg",
+    "height": "1,6 m",
+    "category": "Shellfish",
+    "ability": "Torrent",
+    "gender": { "male": 87.5, "female": 12.5 },
+    "weaknesses": [
+      { "key": "electric", "label": "Elétrico", "color": "#e9cd2c", "textColor": "#111111" },
+      { "key": "grass", "label": "Grama", "color": "#57b956", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 7, "name": "Squirtle", "number": "N°007", "image": "/assets/pokemon/squirtle.png", "level": null },
+      { "id": 8, "name": "Wartortle", "number": "N°008", "image": "/assets/pokemon/wartortle.png", "level": "Nível 16" },
+      { "id": 9, "name": "Blastoise", "number": "N°009", "image": "/assets/pokemon/blastoise.png", "level": "Nível 36" }
+    ]
+  },
+  {
+    "id": 15,
+    "name": "Beedrill",
+    "slug": "beedrill",
+    "number": "N°015",
+    "image": "/assets/pokemon/beedrill.png",
+    "cardColor": "#dce3d6",
+    "heroColor": "#9bc233",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "bug", "label": "Inseto", "color": "#9bc233", "textColor": "#111111" },
+      { "key": "poison", "label": "Venenoso", "color": "#b466d8", "textColor": "#111111" }
+    ],
+    "description": "Tem três ferrões venenosos em seus membros dianteiros e na cauda. Ataca em alta velocidade.",
+    "weight": "29,5 kg",
+    "height": "1,0 m",
+    "category": "Poison Bee",
+    "ability": "Swarm",
+    "gender": { "male": 50, "female": 50 },
+    "weaknesses": [
+      { "key": "fire", "label": "Fogo", "color": "#f39b52", "textColor": "#111111" },
+      { "key": "flying", "label": "Voador", "color": "#7faae6", "textColor": "#111111" },
+      { "key": "rock", "label": "Pedra", "color": "#b9aa7f", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 15, "name": "Beedrill", "number": "N°015", "image": "/assets/pokemon/beedrill.png", "level": null }
+    ]
+  },
+  {
+    "id": 25,
+    "name": "Pikachu",
+    "slug": "pikachu",
+    "number": "N°025",
+    "image": "/assets/pokemon/pikachu.png",
+    "cardColor": "#ece2c6",
+    "heroColor": "#e9cd2c",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "electric", "label": "Elétrico", "color": "#e9cd2c", "textColor": "#111111" }
+    ],
+    "description": "Armazena eletricidade nas bochechas e libera descargas quando está ameaçado.",
+    "weight": "6,0 kg",
+    "height": "0,4 m",
+    "category": "Mouse",
+    "ability": "Static",
+    "gender": { "male": 50, "female": 50 },
+    "weaknesses": [
+      { "key": "ground", "label": "Terrestre", "color": "#c9763e", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 25, "name": "Pikachu", "number": "N°025", "image": "/assets/pokemon/pikachu.png", "level": null }
+    ]
+  },
+  {
+    "id": 35,
+    "name": "Clefairy",
+    "slug": "clefairy",
+    "number": "N°035",
+    "image": "/assets/pokemon/clefairy.png",
+    "cardColor": "#e8d9e8",
+    "heroColor": "#d584d9",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "fairy", "label": "Fada", "color": "#d584d9", "textColor": "#111111" }
+    ],
+    "description": "É raro e tímido. Dizem que adora dançar em noites de lua cheia.",
+    "weight": "7,5 kg",
+    "height": "0,6 m",
+    "category": "Fairy",
+    "ability": "Cute Charm",
+    "gender": { "male": 25, "female": 75 },
+    "weaknesses": [
+      { "key": "steel", "label": "Metal", "color": "#6b9bb2", "textColor": "#111111" },
+      { "key": "poison", "label": "Venenoso", "color": "#b466d8", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 35, "name": "Clefairy", "number": "N°035", "image": "/assets/pokemon/clefairy.png", "level": null }
+    ]
+  },
+  {
+    "id": 51,
+    "name": "Dugtrio",
+    "slug": "dugtrio",
+    "number": "N°051",
+    "image": "/assets/pokemon/dugtrio.png",
+    "cardColor": "#e7e4de",
+    "heroColor": "#c9763e",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "ground", "label": "Terrestre", "color": "#c9763e", "textColor": "#111111" }
+    ],
+    "description": "Trio de Digletts que cavam túneis gigantes com grande velocidade.",
+    "weight": "33,3 kg",
+    "height": "0,7 m",
+    "category": "Mole",
+    "ability": "Sand Veil",
+    "gender": { "male": 50, "female": 50 },
+    "weaknesses": [
+      { "key": "water", "label": "Água", "color": "#79a8e5", "textColor": "#111111" },
+      { "key": "grass", "label": "Grama", "color": "#57b956", "textColor": "#111111" },
+      { "key": "ice", "label": "Gelo", "color": "#72ccc4", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 51, "name": "Dugtrio", "number": "N°051", "image": "/assets/pokemon/dugtrio.png", "level": null }
+    ]
+  },
+  {
+    "id": 95,
+    "name": "Onix",
+    "slug": "onix",
+    "number": "N°095",
+    "image": "/assets/pokemon/onix.png",
+    "cardColor": "#e6e3dd",
+    "heroColor": "#b9aa7f",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "rock", "label": "Pedra", "color": "#b9aa7f", "textColor": "#111111" },
+      { "key": "ground", "label": "Terrestre", "color": "#c9763e", "textColor": "#111111" }
+    ],
+    "description": "Conforme envelhece, seu corpo rochoso fica mais arredondado e duro.",
+    "weight": "210,0 kg",
+    "height": "8,8 m",
+    "category": "Rock Snake",
+    "ability": "Rock Head",
+    "gender": { "male": 50, "female": 50 },
+    "weaknesses": [
+      { "key": "water", "label": "Água", "color": "#79a8e5", "textColor": "#111111" },
+      { "key": "grass", "label": "Grama", "color": "#57b956", "textColor": "#111111" },
+      { "key": "fighting", "label": "Lutador", "color": "#d44d6d", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 95, "name": "Onix", "number": "N°095", "image": "/assets/pokemon/onix.png", "level": null }
+    ]
+  },
+  {
+    "id": 108,
+    "name": "Lickitung",
+    "slug": "lickitung",
+    "number": "N°108",
+    "image": "/assets/pokemon/lickitung.png",
+    "cardColor": "#dfdfe0",
+    "heroColor": "#9ca3ab",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "normal", "label": "Normal", "color": "#9ca3ab", "textColor": "#111111" }
+    ],
+    "description": "Sua língua pode ser estendida como a de um camaleão e tem incrível precisão.",
+    "weight": "65,5 kg",
+    "height": "1,2 m",
+    "category": "Licking",
+    "ability": "Own Tempo",
+    "gender": { "male": 50, "female": 50 },
+    "weaknesses": [
+      { "key": "fighting", "label": "Lutador", "color": "#d44d6d", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 108, "name": "Lickitung", "number": "N°108", "image": "/assets/pokemon/lickitung.png", "level": null }
+    ]
+  },
+  {
+    "id": 109,
+    "name": "Koffing",
+    "slug": "koffing",
+    "number": "N°109",
+    "image": "/assets/pokemon/koffing.png",
+    "cardColor": "#e2dce8",
+    "heroColor": "#b466d8",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "poison", "label": "Venenoso", "color": "#b466d8", "textColor": "#111111" }
+    ],
+    "description": "Seu corpo é cheio de gases tóxicos que podem explodir com um simples impacto.",
+    "weight": "1,0 kg",
+    "height": "0,6 m",
+    "category": "Poison Gas",
+    "ability": "Levitate",
+    "gender": { "male": 50, "female": 50 },
+    "weaknesses": [
+      { "key": "ground", "label": "Terrestre", "color": "#c9763e", "textColor": "#111111" },
+      { "key": "psychic", "label": "Psíquico", "color": "#f06e7a", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 109, "name": "Koffing", "number": "N°109", "image": "/assets/pokemon/koffing.png", "level": null }
+    ]
+  },
+  {
+    "id": 151,
+    "name": "Mew",
+    "slug": "mew",
+    "number": "N°151",
+    "image": "/assets/pokemon/mew.png",
+    "cardColor": "#eadcdf",
+    "heroColor": "#f06e7a",
+    "region": "kanto",
+    "generation": 1,
+    "types": [
+      { "key": "psychic", "label": "Psíquico", "color": "#f06e7a", "textColor": "#111111" }
+    ],
+    "description": "É tão raro que muitos especialistas acreditam ser apenas uma miragem.",
+    "weight": "4,0 kg",
+    "height": "0,4 m",
+    "category": "New Species",
+    "ability": "Synchronize",
+    "gender": { "male": 0, "female": 0 },
+    "weaknesses": [
+      { "key": "bug", "label": "Inseto", "color": "#9bc233", "textColor": "#111111" },
+      { "key": "dark", "label": "Noturno", "color": "#5f636b", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 151, "name": "Mew", "number": "N°151", "image": "/assets/pokemon/mew.png", "level": null }
+    ]
+  },
+  {
+    "id": 245,
+    "name": "Suicune",
+    "slug": "suicune",
+    "number": "N°245",
+    "image": "/assets/pokemon/suicune.png",
+    "cardColor": "#d7dde5",
+    "heroColor": "#4d8dd9",
+    "region": "johto",
+    "generation": 2,
+    "types": [
+      { "key": "water", "label": "Água", "color": "#4d8dd9", "textColor": "#111111" }
+    ],
+    "description": "Corre pelo mundo purificando água poluída. Sua presença traz ventos do norte.",
+    "weight": "187,0 kg",
+    "height": "2,0 m",
+    "category": "Aurora",
+    "ability": "Pressure",
+    "gender": { "male": 0, "female": 0 },
+    "weaknesses": [
+      { "key": "electric", "label": "Elétrico", "color": "#e9cd2c", "textColor": "#111111" },
+      { "key": "grass", "label": "Grama", "color": "#57b956", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 245, "name": "Suicune", "number": "N°245", "image": "/assets/pokemon/suicune.png", "level": null }
+    ]
+  },
+  {
+    "id": 306,
+    "name": "Aggron",
+    "slug": "aggron",
+    "number": "N°306",
+    "image": "/assets/pokemon/aggron.png",
+    "cardColor": "#d9dee2",
+    "heroColor": "#5f8fa2",
+    "region": "hoenn",
+    "generation": 3,
+    "types": [
+      { "key": "steel", "label": "Metal", "color": "#5f8fa2", "textColor": "#111111" },
+      { "key": "ground", "label": "Terrestre", "color": "#c9763e", "textColor": "#111111" }
+    ],
+    "description": "Protege ferozmente seu território montanhoso. Recupera áreas devastadas naturalmente.",
+    "weight": "360,0 kg",
+    "height": "2,1 m",
+    "category": "Iron Armor",
+    "ability": "Sturdy",
+    "gender": { "male": 50, "female": 50 },
+    "weaknesses": [
+      { "key": "fighting", "label": "Lutador", "color": "#d44d6d", "textColor": "#111111" },
+      { "key": "ground", "label": "Terrestre", "color": "#c9763e", "textColor": "#111111" },
+      { "key": "water", "label": "Água", "color": "#79a8e5", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 306, "name": "Aggron", "number": "N°306", "image": "/assets/pokemon/aggron.png", "level": null }
+    ]
+  },
+  {
+    "id": 384,
+    "name": "Rayquaza",
+    "slug": "rayquaza",
+    "number": "N°384",
+    "image": "/assets/pokemon/rayquaza.png",
+    "cardColor": "#d8e0e8",
+    "heroColor": "#2d83d4",
+    "region": "hoenn",
+    "generation": 3,
+    "types": [
+      { "key": "dragon", "label": "Dragão", "color": "#2d83d4", "textColor": "#111111" }
+    ],
+    "description": "Vive na camada de ozônio acima das nuvens. Dizem que nunca desce para a terra.",
+    "weight": "206,5 kg",
+    "height": "7,0 m",
+    "category": "Sky High",
+    "ability": "Air Lock",
+    "gender": { "male": 0, "female": 0 },
+    "weaknesses": [
+      { "key": "ice", "label": "Gelo", "color": "#72ccc4", "textColor": "#111111" },
+      { "key": "fairy", "label": "Fada", "color": "#d584d9", "textColor": "#111111" },
+      { "key": "dragon", "label": "Dragão", "color": "#2d83d4", "textColor": "#111111" }
+    ],
+    "evolution": [
+      { "id": 384, "name": "Rayquaza", "number": "N°384", "image": "/assets/pokemon/rayquaza.png", "level": null }
+    ]
+  }
+]

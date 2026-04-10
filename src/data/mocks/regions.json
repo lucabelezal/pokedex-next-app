@@ -1,0 +1,66 @@
+[
+  {
+    "key": "kanto",
+    "name": "Kanto",
+    "generation": "1° GERAÇÃO",
+    "color": "#e8502a",
+    "accent": "#b03010",
+    "starterIds": [1, 4, 7]
+  },
+  {
+    "key": "johto",
+    "name": "Johto",
+    "generation": "2° GERAÇÃO",
+    "color": "#4a90d9",
+    "accent": "#2c5fa0",
+    "starterIds": [245]
+  },
+  {
+    "key": "hoenn",
+    "name": "Hoenn",
+    "generation": "3° GERAÇÃO",
+    "color": "#3a8a5a",
+    "accent": "#1e5c35",
+    "starterIds": [306, 384]
+  },
+  {
+    "key": "sinnoh",
+    "name": "Sinnoh",
+    "generation": "4° GERAÇÃO",
+    "color": "#7b5ea7",
+    "accent": "#4e3070",
+    "starterIds": []
+  },
+  {
+    "key": "unova",
+    "name": "Unova",
+    "generation": "5° GERAÇÃO",
+    "color": "#2b2b2b",
+    "accent": "#111111",
+    "starterIds": []
+  },
+  {
+    "key": "kalos",
+    "name": "Kalos",
+    "generation": "6° GERAÇÃO",
+    "color": "#1a6fa8",
+    "accent": "#0d3d60",
+    "starterIds": []
+  },
+  {
+    "key": "alola",
+    "name": "Alola",
+    "generation": "7° GERAÇÃO",
+    "color": "#d46b1e",
+    "accent": "#8a3d05",
+    "starterIds": []
+  },
+  {
+    "key": "galar",
+    "name": "Galar",
+    "generation": "8° GERAÇÃO",
+    "color": "#d44b74",
+    "accent": "#8a1a3c",
+    "starterIds": []
+  }
+]
