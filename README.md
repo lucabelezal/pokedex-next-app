@@ -20,13 +20,28 @@ O layout foi baseado no projeto da comunidade Figma:
 
 ## Screenshots
 
-| Pokédex | Detalhe | Regiões |
-|--------|---------|---------|
-| ![Tela da Pokédex](doc/images/lista_pokedex.png) | ![Tela de detalhe do Pokémon](doc/images/detalhe.png) | ![Tela de regiões](doc/images/regioes.png) |
-
-| Favoritos | Favoritos vazio | Conta |
-|-----------|------------------|-------|
-| ![Tela de favoritos](doc/images/favoritos.png) | ![Tela de favoritos vazio](doc/images/favoritos_vazio.png) | ![Tela de conta](doc/images/conta.png) |
+<table>
+    <tr>
+        <th>Pokédex</th>
+        <th>Detalhe</th>
+        <th>Regiões</th>
+    </tr>
+    <tr>
+        <td><img src="doc/images/lista_pokedex.png" alt="Tela da Pokédex" width="260" /></td>
+        <td><img src="doc/images/detalhe.png" alt="Tela de detalhe do Pokémon" width="260" /></td>
+        <td><img src="doc/images/regioes.png" alt="Tela de regiões" width="260" /></td>
+    </tr>
+    <tr>
+        <th>Favoritos</th>
+        <th>Favoritos vazio</th>
+        <th>Conta</th>
+    </tr>
+    <tr>
+        <td><img src="doc/images/favoritos.png" alt="Tela de favoritos" width="260" /></td>
+        <td><img src="doc/images/favoritos_vazio.png" alt="Tela de favoritos vazio" width="260" /></td>
+        <td><img src="doc/images/conta.png" alt="Tela de conta" width="260" /></td>
+    </tr>
+</table>
 
 ---
 
