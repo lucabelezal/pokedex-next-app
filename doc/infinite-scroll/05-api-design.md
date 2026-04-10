@@ -1,10 +1,46 @@
 # 05 — API Design
 
-## Design de API REST paginada para quando houver backend
+## PokéAPI (fonte atual) e design de API REST paginada
 
-> Esta seção é forward-looking: o projeto atual usa dados estáticos.
-> Documente aqui para quando um backend real for implementado — ou como
-> referência para outros projetos que já possuem API.
+> **Atualizado:** o projeto integra a [PokéAPI](https://pokeapi.co/api/v2) como
+> fonte de dados em build-time (SSG). A segunda metade desta seção documenta
+> o design de paginação para quando houver uma API própria.
+
+---
+
+### Endpoints PokéAPI utilizados no build
+
+```
+GET /pokemon/{id}
+  → id, name, weight (hg), height (dm), types[], abilities[], sprites
+
+GET /pokemon-species/{id}
+  → descrição (pt-br language=13, fallback en), generation, gender_rate,
+    genera (categoria), names (nome localizado), evolution_chain.url
+
+GET /evolution-chain/{url}
+  → cadeia de evolução (chain.species, evolves_to, evolution_details.min_level)
+
+GET /type/{name}
+  → damage_relations.double_damage_from (fraquezas ×2 por tipo duplo)
+```
+
+**Cache**: `fetch(url, { next: { revalidate: 86400 } })` — Next.js deduplica
+fetches idênticos em memória durante o mesmo build. Os ~18 tipos únicos são
+buscados uma única vez mesmo que compartilhados por centenas de Pokémon.
+
+**Localização**: descrições em `pt-br` (language ID 13) com fallback para `en`.
+
+---
+
+### Campos sem equivalente na PokéAPI
+
+| Campo | Origem | Estratégia |
+|---|---|---|
+| `cardColor` | Tipo primário | `type-metadata.ts` — mapa estático |
+| `heroColor` | Tipo primário | `type-metadata.ts` — mapa estático |
+| `types[].label` (PT-BR) | Tipo | `type-metadata.ts` — mapa estático |
+| `types[].color/textColor` | Tipo | `type-metadata.ts` — mapa estático |
 
 ---
 
@@ -202,26 +238,30 @@ const allItems = data?.pages.flatMap((page) => page.items) ?? [];
 ### Comparativo: solução atual vs. com API
 
 ```
-SOLUÇÃO ATUAL (MVP)                  SOLUÇÃO COM API (PRODUÇÃO)
-───────────────────                  ──────────────────────────
+SOLUÇÃO ATUAL                        SOLUÇÃO COM API PRÓPRIA
+─────────────────────────────────    ──────────────────────────────────
 
-page.tsx (SSG)                       Next.js Route Handler
+PokéAPI (build-time, SSG)            Next.js Route Handler
     │                                /api/pokemon
-    │ serializa props (905 itens)         │
-    │ no HTML estático                    │ retorna 20 itens + cursor
+    │ 905 fetches em lotes de 50          │
+    │ revalidate: 86400 (cache 24h)       │ retorna 20 itens + cursor
     ▼                                     ▼
-usePokedexFilters                    useInfiniteQuery (React Query)
-    │ filtra em memória                   │ cache automático
-    ▼                                     │ prefetch
-useInfiniteScroll                         │ dedup de requests
-    │ slice client-side               useInfiniteScroll
-    ▼                                     │
-DOM (20 cards)                        DOM (20 cards)
+page.tsx serializa 905 itens         useInfiniteQuery (React Query)
+    │ como props no HTML estático         │ cache automático + prefetch
+    ▼                                     ▼
+usePokedexFilters                    usePokedexFilters
+    │ filtra em memória                   │ filtra em memória
+    ▼                                     ▼
+useInfiniteScroll                    useInfiniteScroll
+    │ slice client-side                   │ slice client-side
+    ▼                                     ▼
+DOM (20 cards)                       DOM (20 cards)
 
-Bundle:    +0 KB                     Bundle: +13 KB (@tanstack/query)
-Latência:  0ms (memória)             Latência: 50-200ms (network)
-Offline:   ✅ (dados no HTML)        Offline: ⚠️ (depende de cache)
-Staleness: nunca (build time)        Staleness: controlado por Cache-Control
+Bundle:     +0 KB extra              Bundle: +13 KB (@tanstack/query)
+Latência:   0ms (dados no HTML)      Latência: 50-200ms (network)
+Offline:    ✅ (dados no HTML)       Offline: ⚠️ (depende de cache)
+Freshness:  revalidado a cada build  Freshness: controlado por Cache-Control
+Build time: ~2-3min (905 fetches)    Build time: <30s (sem fetches)
 ```
 
 → Próximo: [06-performance.md](./06-performance.md)

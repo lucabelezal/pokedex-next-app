@@ -10,9 +10,16 @@
 ┌──────────────────────────────────────────────────────────────┐
 │  BUILD TIME (next build)                                     │
 │                                                              │
-│  pokemon-catalog.json ──> page.tsx (force-static)           │
-│  app-config.json      ──> HTML + JS chunks gerados          │
-│  regions.json                                                │
+│  PokéAPI (pokeapi.co/api/v2)                                 │
+│    └─ pokeapi-client.ts  (fetch + cache revalidate:86400)    │
+│    └─ pokeapi-mappers.ts (raw → PokemonCatalogItem)          │
+│    └─ pokeapi-service.ts ──> page.tsx (force-static)        │
+│                                                              │
+│  Dados estáticos (JSON local)                                │
+│    app-config.json    ──> getAppConfig()                     │
+│    regions.json       ──> getRegionsCatalog()                │
+│    user-profile.json  ──> getUserProfile()                   │
+│    type-metadata.ts   ──> getAvailableTypeFilters()          │
 └──────────────────────────────┬───────────────────────────────┘
                                │ deploy
 ┌──────────────────────────────▼───────────────────────────────┐
@@ -58,6 +65,9 @@
 ```
 1. npm run build
    ├─ page.tsx executa getAppConfig(), getPokemonCatalog(), getAvailableTypeFilters()
+   ├─ getPokemonCatalog() → 905 fetches à PokéAPI em lotes paralelos de 50
+   │    GET /pokemon/{id}, /pokemon-species/{id}, /evolution-chain/{url}
+   │    GET /type/{name}  (1 ou 2 por Pokémon, ~18 únicos, cacheados)
    ├─ Serializa os 905 itens como props no HTML estático
    └─ Gera _next/static/chunks/
 
