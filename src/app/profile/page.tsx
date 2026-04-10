@@ -9,13 +9,11 @@ function SettingsRow({
   value,
   chevron = false,
   danger = false,
-  toggle,
 }: {
   label: string;
   value?: string;
   chevron?: boolean;
   danger?: boolean;
-  toggle?: boolean;
 }) {
   return (
     <div className="flex items-center justify-between px-4 py-3.5">
@@ -33,11 +31,6 @@ function SettingsRow({
           <ChevronDownIcon
             className="h-4 w-4 -rotate-90 text-[#b0b2b8]"
           />
-        )}
-        {toggle && (
-          <div className="h-[28px] w-[48px] rounded-full bg-[#173EA5] p-[2px]">
-            <div className="ml-auto h-[24px] w-[24px] rounded-full bg-white shadow" />
-          </div>
         )}
       </div>
     </div>

@@ -9,7 +9,13 @@ import { ElementoOutline } from "@/components/elemento-outline";
 import { TabBar } from "@/components/tab-bar";
 import { TypeIcon } from "@/components/type-icon";
 import { getAppConfig, getPokemonById, getStaticPokemonParams } from "@/lib/pokedex-service";
+import type { ReactNode } from "react";
 import type { PokemonTypeTag } from "@/lib/pokedex-types";
+
+const COLOR_MALE = "#2551C4";
+const COLOR_FEMALE = "#FF7596";
+const COLOR_EVOLUTION_LEVEL = "#173EA5";
+const COLOR_EVOLUTION_BORDER = "#E6E6E6";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -55,14 +61,11 @@ export default async function PokemonDetailPage({ params }: Params) {
   return (
     <DirectionalTransition>
     <main className="mobile-shell flex flex-col bg-white">
-      {/* HERO wrapper — permite que o pokémon vaze sobre o card */}
       <div className="relative flex-1 bg-white">
-        {/* HERO */}
         <section
           className="relative overflow-hidden bg-white"
           style={{ height: "calc(304px + env(safe-area-inset-top))" }}
         >
-          {/* Círculo colorido — heroColor sobre fundo branco cria o domo */}
           <div
             className="absolute rounded-full"
             style={{
@@ -75,7 +78,6 @@ export default async function PokemonDetailPage({ params }: Params) {
             }}
           />
 
-          {/* ElementoOutline 204×204 — sempre atrás do pokémon */}
           <div
             className="absolute"
             style={{ width: "204px", height: "204px", left: "50%", top: "35px", transform: "translateX(-50%)", zIndex: 0 }}
@@ -83,7 +85,6 @@ export default async function PokemonDetailPage({ params }: Params) {
             <ElementoOutline typeKey={pokemon.types[0]?.key} className="h-full w-full" />
           </div>
 
-          {/* Icons bar */}
           <div
             className="absolute left-4 right-4 flex items-center justify-between"
             style={{ top: "calc(19px + env(safe-area-inset-top))" }}
@@ -100,7 +101,6 @@ export default async function PokemonDetailPage({ params }: Params) {
           </div>
         </section>
 
-        {/* Pokémon image — bottom alinhado com o bottom do círculo (304px) */}
         <Image
           src={pokemon.image}
           alt={pokemon.name}
@@ -118,9 +118,7 @@ export default async function PokemonDetailPage({ params }: Params) {
           priority
         />
 
-      {/* CONTENT CARD */}
-      <section className="rounded-t-[32px] bg-white px-4 pb-28 pt-[32px]">
-        {/* Nome + Número */}
+        <section className="rounded-t-[32px] bg-white px-4 pb-28 pt-[32px]">
         <h1
           className="text-[32px] font-bold leading-[48px] text-black"
           style={{ marginBottom: "-5px" }}
@@ -131,47 +129,42 @@ export default async function PokemonDetailPage({ params }: Params) {
           {pokemon.number}
         </p>
 
-        {/* Type badges */}
         <div className="mt-3 flex flex-wrap gap-[8px]">
           {pokemon.types.map((type) => (
-            <TypeBadgeDetail key={type.key} type={type} />
+            <TypeBadge key={type.key} type={type} />
           ))}
         </div>
 
-        {/* Descrição */}
         <p className="mt-4 text-[14px] leading-[145%] text-black/70">
           {pokemon.description}
         </p>
 
-        {/* Divider */}
         <div className="mt-5 border-t border-black/[0.05]" />
 
-        {/* Características: Peso / Altura / Categoria / Habilidade */}
         <div className="mt-5 flex flex-col gap-5">
           <div className="flex gap-5">
-            <MetricCard label={config.texts.weightLabel} icon="weight" value={pokemon.weight} />
-            <MetricCard label={config.texts.heightLabel} icon="height" value={pokemon.height} />
+            <MetricCard label={config.texts.weightLabel} icon={<WeightIcon />} value={pokemon.weight} />
+            <MetricCard label={config.texts.heightLabel} icon={<HeightIcon />} value={pokemon.height} />
           </div>
           <div className="flex gap-5">
-            <MetricCard label={config.texts.categoryLabel} icon="category" value={pokemon.category} />
-            <MetricCard label={config.texts.abilityLabel} icon="ability" value={pokemon.ability} />
+            <MetricCard label={config.texts.categoryLabel} icon={<CategoryIcon />} value={pokemon.category} />
+            <MetricCard label={config.texts.abilityLabel} icon={<AbilityIcon />} value={pokemon.ability} />
           </div>
         </div>
 
-        {/* Gênero */}
         <div className="mt-5">
           <p className="text-center text-[12px] font-medium uppercase tracking-[0.05em] text-black/70">
             {config.texts.genderLabel}
           </p>
           <div
             className="mt-3 h-2 overflow-hidden rounded-full"
-            style={{ backgroundColor: "#2551C4" }}
+            style={{ backgroundColor: COLOR_MALE }}
           >
             <div
               className="ml-auto h-full rounded-r-full"
               style={{
                 width: `${pokemon.gender.female}%`,
-                backgroundColor: "#FF7596",
+                backgroundColor: COLOR_FEMALE,
               }}
             />
           </div>
@@ -187,32 +180,30 @@ export default async function PokemonDetailPage({ params }: Params) {
           </div>
         </div>
 
-        {/* Fraquezas */}
         <section className="mt-6">
           <h2 className="text-[18px] font-bold leading-[27px] text-black">
             {config.texts.weaknessesLabel}
           </h2>
           <div className="mt-3 grid grid-cols-2 gap-3">
             {pokemon.weaknesses.map((type) => (
-              <TypeBadgeWide key={type.key} type={type} />
+              <TypeBadge key={type.key} type={type} wide />
             ))}
           </div>
         </section>
 
-        {/* Evoluções */}
         <section className="mt-10">
           <h2 className="text-[18px] font-bold leading-[27px] text-black">
             {config.texts.evolutionsLabel}
           </h2>
-          <div className="mt-2 rounded-[16px] border border-[#E6E6E6] px-4 py-6">
+          <div className="mt-2 rounded-[16px] border px-4 py-6" style={{ borderColor: COLOR_EVOLUTION_BORDER }}>
             <div className="flex flex-col items-center gap-2">
               {evolutionWithColors.map((item, index) => (
-                <div key={`evo-${item.id}-${index}`} className="w-full">
+                <div key={item.id} className="w-full">
                   {index > 0 && (
                     <div className="my-2 flex items-center justify-center gap-2">
                       <EvolutionArrow />
                       {item.level && (
-                        <span className="text-[14px] font-medium text-[#173EA5]">
+                        <span className="text-[14px] font-medium" style={{ color: COLOR_EVOLUTION_LEVEL }}>
                           {item.level}
                         </span>
                       )}
@@ -224,7 +215,7 @@ export default async function PokemonDetailPage({ params }: Params) {
             </div>
           </div>
         </section>
-      </section>
+        </section>
       </div>
 
       <TabBar />
@@ -233,26 +224,10 @@ export default async function PokemonDetailPage({ params }: Params) {
   );
 }
 
-// ─── Componentes locais ───────────────────────────────────────────────────────
-
-function TypeBadgeDetail({ type }: { type: PokemonTypeTag }) {
+function TypeBadge({ type, wide = false }: { type: PokemonTypeTag; wide?: boolean }) {
   return (
     <div
-      className="inline-flex h-[36px] items-center gap-2 rounded-[64px] px-[16px]"
-      style={{ backgroundColor: type.color }}
-    >
-      <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-white">
-        <TypeIcon typeKey={type.key} className="h-[17px] w-[17px] object-contain" />
-      </span>
-      <span className="text-[14px] font-medium text-black">{type.label}</span>
-    </div>
-  );
-}
-
-function TypeBadgeWide({ type }: { type: PokemonTypeTag }) {
-  return (
-    <div
-      className="flex h-[36px] items-center justify-center gap-2 rounded-[64px] px-[16px]"
+      className={`${wide ? "flex justify-center" : "inline-flex"} h-[36px] items-center gap-2 rounded-[64px] px-[16px]`}
       style={{ backgroundColor: type.color }}
     >
       <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-white">
@@ -269,14 +244,14 @@ function MetricCard({
   value,
 }: {
   label: string;
-  icon: string;
+  icon: ReactNode;
   value: string;
 }) {
   return (
     <div className="flex flex-1 flex-col gap-1">
       <div className="flex items-center gap-[8px]">
         <span className="flex h-4 w-4 items-center justify-center text-black/60">
-          <MetricIcon type={icon} />
+          {icon}
         </span>
         <span className="text-[12px] font-medium uppercase tracking-[0.05em] text-black/60">
           {label}
@@ -289,33 +264,36 @@ function MetricCard({
   );
 }
 
-function MetricIcon({ type }: { type: string }) {
-  if (type === "weight") {
-    return (
-      <svg viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4" aria-hidden>
-        <path d="M8 2.5C7.2 2.5 6.5 3 6.2 3.7H4L2.5 13.5H13.5L12 3.7H9.8C9.5 3 8.8 2.5 8 2.5ZM8 4C8.6 4 9 4.4 9 5C9 5.6 8.6 6 8 6C7.4 6 7 5.6 7 5C7 4.4 7.4 4 8 4Z" />
-      </svg>
-    );
-  }
-  if (type === "height") {
-    return (
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4" aria-hidden>
-        <path d="M8 2V14" strokeLinecap="round" />
-        <path d="M5 5L8 2L11 5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M5 11L8 14L11 11" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    );
-  }
-  if (type === "category") {
-    return (
-      <svg viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4" aria-hidden>
-        <rect x="2" y="2" width="5.2" height="5.2" rx="1" />
-        <rect x="8.8" y="2" width="5.2" height="5.2" rx="1" />
-        <rect x="2" y="8.8" width="5.2" height="5.2" rx="1" />
-        <rect x="8.8" y="8.8" width="5.2" height="5.2" rx="1" />
-      </svg>
-    );
-  }
+function WeightIcon() {
+  return (
+    <svg viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4" aria-hidden>
+      <path d="M8 2.5C7.2 2.5 6.5 3 6.2 3.7H4L2.5 13.5H13.5L12 3.7H9.8C9.5 3 8.8 2.5 8 2.5ZM8 4C8.6 4 9 4.4 9 5C9 5.6 8.6 6 8 6C7.4 6 7 5.6 7 5C7 4.4 7.4 4 8 4Z" />
+    </svg>
+  );
+}
+
+function HeightIcon() {
+  return (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4" aria-hidden>
+      <path d="M8 2V14" strokeLinecap="round" />
+      <path d="M5 5L8 2L11 5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M5 11L8 14L11 11" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function CategoryIcon() {
+  return (
+    <svg viewBox="0 0 16 16" fill="currentColor" className="h-4 w-4" aria-hidden>
+      <rect x="2" y="2" width="5.2" height="5.2" rx="1" />
+      <rect x="8.8" y="2" width="5.2" height="5.2" rx="1" />
+      <rect x="2" y="8.8" width="5.2" height="5.2" rx="1" />
+      <rect x="8.8" y="8.8" width="5.2" height="5.2" rx="1" />
+    </svg>
+  );
+}
+
+function AbilityIcon() {
   return (
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" className="h-4 w-4" aria-hidden>
       <circle cx="8" cy="8" r="5.5" />
