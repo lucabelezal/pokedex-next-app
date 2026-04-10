@@ -20,11 +20,13 @@ O layout foi baseado no projeto da comunidade Figma:
 
 ## Screenshots
 
-> Os screenshots serão adicionados em `doc/images/` conforme as telas forem finalizadas.
+| Pokédex | Detalhe | Regiões |
+|--------|---------|---------|
+| ![Tela da Pokédex](doc/images/lista_pokedex.png) | ![Tela de detalhe do Pokémon](doc/images/detalhe.png) | ![Tela de regiões](doc/images/regioes.png) |
 
-| Splash | Pokédex | Detalhes | Favoritos |
-|--------|---------|----------|-----------|
-| _em breve_ | _em breve_ | _em breve_ | _em breve_ |
+| Favoritos | Favoritos vazio | Conta |
+|-----------|------------------|-------|
+| ![Tela de favoritos](doc/images/favoritos.png) | ![Tela de favoritos vazio](doc/images/favoritos_vazio.png) | ![Tela de conta](doc/images/conta.png) |
 
 ---
 
@@ -70,11 +72,11 @@ pokedex-next-app/
     ├── app/               # Rotas (App Router)
     │   ├── api/favorites/ # API REST de favoritos
     │   ├── pokedex/       # Listagem e detalhe
-    │   ├── regioes/       # Listagem e detalhe por região
-    │   ├── favoritos/
-    │   ├── perfil/
+    │   ├── regions/       # Listagem e detalhe por região
+    │   ├── favorites/
+    │   ├── profile/
     │   ├── login/
-    │   ├── cadastro/
+    │   ├── register/
     │   ├── onboarding/
     │   └── splash/
     ├── components/        # Componentes compartilhados
