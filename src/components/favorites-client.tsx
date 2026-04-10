@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useMemo } from "react";
 import { PokemonCard } from "@/components/pokemon-card";
 import { SwipeToDelete } from "@/components/swipe-to-delete";
@@ -15,7 +14,7 @@ type FavoritesClientProps = {
 };
 
 export function FavoritesClient({ config, catalog }: FavoritesClientProps) {
-  const { favoriteIds, loading, toggleFavorite } = useFavorites();
+  const { favoriteIds, loading, error, toggleFavorite } = useFavorites();
 
   const favoritePokemons = useMemo(() => {
     return catalog.filter((pokemon) => favoriteIds.includes(pokemon.id));
@@ -28,6 +27,15 @@ export function FavoritesClient({ config, catalog }: FavoritesClientProps) {
       </header>
 
       <section className="flex-1 px-4 pb-6 pt-6">
+        {error ? (
+          <p
+            role="alert"
+            className="mb-4 rounded-2xl border border-[#f3a2a2] bg-[#ffe9e9] px-4 py-3 text-sm font-semibold text-[#8b1f1f]"
+          >
+            {error}
+          </p>
+        ) : null}
+
         {loading ? (
           <p className="text-center text-lg font-semibold text-[#6d6e73]">Carregando...</p>
         ) : null}

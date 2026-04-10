@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { removeFavorite } from "@/lib/favorites-store";
+import { parseFavoriteIdParam } from "@/lib/runtime-validators";
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -7,11 +8,10 @@ type Params = {
 
 export async function DELETE(_request: Request, { params }: Params) {
   const resolved = await params;
-  const parsed = Number(resolved.id);
-
-  if (Number.isNaN(parsed)) {
+  try {
+    const parsed = parseFavoriteIdParam(resolved.id);
+    return NextResponse.json({ ids: removeFavorite(parsed) });
+  } catch {
     return NextResponse.json({ error: "Id inválido." }, { status: 400 });
   }
-
-  return NextResponse.json({ ids: removeFavorite(parsed) });
 }

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { HeartIcon } from "@/components/icons";
+import { parseFavoriteIdsResponse } from "@/lib/runtime-validators";
 
 type DetailFavoriteToggleProps = {
   id: number;
@@ -11,15 +12,24 @@ type DetailFavoriteToggleProps = {
 export function DetailFavoriteToggle({ id, name }: DetailFavoriteToggleProps) {
   const [favorite, setFavorite] = useState(false);
 
+  const parseFavoriteState = useCallback((ids: number[]) => {
+    setFavorite(ids.includes(id));
+  }, [id]);
+
   useEffect(() => {
     let mounted = true;
 
     async function load() {
       const response = await fetch("/api/favorites", { cache: "no-store" });
-      const data = (await response.json()) as { ids: number[] };
+      if (!response.ok) {
+        return;
+      }
+
+      const data = await response.json();
+      const ids = parseFavoriteIdsResponse(data);
 
       if (mounted) {
-        setFavorite((data.ids ?? []).includes(id));
+        parseFavoriteState(ids);
       }
     }
 
@@ -28,13 +38,17 @@ export function DetailFavoriteToggle({ id, name }: DetailFavoriteToggleProps) {
     return () => {
       mounted = false;
     };
-  }, [id]);
+  }, [id, parseFavoriteState]);
 
   const toggle = async () => {
     if (favorite) {
       const response = await fetch(`/api/favorites/${id}`, { method: "DELETE" });
-      const data = (await response.json()) as { ids: number[] };
-      setFavorite((data.ids ?? []).includes(id));
+      if (!response.ok) {
+        return;
+      }
+
+      const data = await response.json();
+      parseFavoriteState(parseFavoriteIdsResponse(data));
       return;
     }
 
@@ -43,8 +57,12 @@ export function DetailFavoriteToggle({ id, name }: DetailFavoriteToggleProps) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id }),
     });
-    const data = (await response.json()) as { ids: number[] };
-    setFavorite((data.ids ?? []).includes(id));
+    if (!response.ok) {
+      return;
+    }
+
+    const data = await response.json();
+    parseFavoriteState(parseFavoriteIdsResponse(data));
   };
 
   return (

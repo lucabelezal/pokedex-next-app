@@ -124,6 +124,7 @@ A pasta `.agents/` contém configurações para o **GitHub Copilot** (VS Code):
 |--------|-----------|
 | `feature-creator` | Cria features completas no padrão bulletproof-react |
 | `test-writer` | Escreve testes unitários, de integração e E2E |
+| `refactor-orchestrator` | Orquestra refatoração TypeScript incremental por fases |
 
 ### Skills instaladas (`skills/`)
 
@@ -138,6 +139,11 @@ A pasta `.agents/` contém configurações para o **GitHub Copilot** (VS Code):
 | `conventional-commits` | Padrão de mensagens de commit |
 | `web-design-guidelines` | Auditoria de UI/UX e acessibilidade |
 | `write-tests` | Escrita de testes no padrão do projeto |
+| `typescript-refactoring` | Workflow de refatoração incremental (tooling, type safety, arquitetura e testes) |
+
+### Guias internos
+
+- [TypeScript Style Guide](doc/typescript-style-guide.md)
 
 ---
 
@@ -155,6 +161,15 @@ npm run build
 
 # Iniciar em produção
 npm start
+
+# Lint
+npm run lint
+
+# Type-check
+npm run type-check
+
+# Verificação completa
+npm run check
 ```
 
 Abra [http://localhost:3000](http://localhost:3000) no navegador.

@@ -1,6 +1,8 @@
-const globalForFavorites = globalThis as unknown as {
-  __pokedexFavorites?: Set<number>;
-};
+declare global {
+  var __pokedexFavorites: Set<number> | undefined;
+}
+
+const globalForFavorites = globalThis;
 
 function getFavoritesSet() {
   if (!globalForFavorites.__pokedexFavorites) {
@@ -26,4 +28,8 @@ export function removeFavorite(id: number) {
 
 export function isFavorite(id: number) {
   return getFavoritesSet().has(id);
+}
+
+export function resetFavoritesStore() {
+  getFavoritesSet().clear();
 }

@@ -15,6 +15,18 @@ type TypeFilter = {
   color: string;
 };
 
+const parseSortKey = (value: string): SortKey => {
+  switch (value) {
+    case "az":
+    case "za":
+    case "number-asc":
+    case "number-desc":
+      return value;
+    default:
+      return "az";
+  }
+};
+
 type PokedexListClientProps = {
   initialCatalog: PokemonCatalogItem[];
   typeFilters: TypeFilter[];
@@ -106,7 +118,7 @@ export function PokedexListClient({ initialCatalog, typeFilters, config, title, 
           <label className="relative block">
             <select
               value={sort}
-              onChange={(event) => setSort(event.target.value as SortKey)}
+              onChange={(event) => setSort(parseSortKey(event.target.value))}
               className="h-[42px] w-full appearance-none rounded-[48px] bg-[#333333] px-4 pr-9 text-[14px] font-semibold leading-[21px] text-white outline-none"
             >
               <option value="az">{config.texts.sortAzLabel}</option>

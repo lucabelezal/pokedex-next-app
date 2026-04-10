@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { BackIcon } from "@/components/icons";
 import appConfigData from "@/data/mocks/app-config.json";
 
@@ -25,7 +25,7 @@ type OnboardingStep = {
   imageHeight: number;
 };
 
-export default function OnboardingPage() {
+function OnboardingPageContent() {
   const t = appConfigData.texts;
   const searchParams = useSearchParams();
 
@@ -136,11 +136,6 @@ export default function OnboardingPage() {
 
     voltar();
   };
-
-  useEffect(() => {
-    const nextStep = getStepFromQuery();
-    setStep(nextStep);
-  }, [getStepFromQuery]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -291,5 +286,21 @@ export default function OnboardingPage() {
         ) : null}
       </div>
     </main>
+  );
+}
+
+function OnboardingFallback() {
+  return (
+    <main className="mobile-shell flex flex-col items-center justify-center bg-white px-8 text-center">
+      <p className="text-[16px] font-semibold text-[#5f6066]">Carregando onboarding...</p>
+    </main>
+  );
+}
+
+export default function OnboardingPage() {
+  return (
+    <Suspense fallback={<OnboardingFallback />}>
+      <OnboardingPageContent />
+    </Suspense>
   );
 }
