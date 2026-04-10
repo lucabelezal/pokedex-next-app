@@ -3,6 +3,13 @@ const BASE_URL = "https://pokeapi.co/api/v2";
 // Cache de 24h: dados da PokéAPI mudam raramente
 const CACHE_OPTIONS = { next: { revalidate: 86400 } } as const;
 
+export class PokeApiError extends Error {
+  constructor(public readonly status: number, url: string) {
+    super(`PokéAPI ${status}: ${url}`);
+    this.name = "PokeApiError";
+  }
+}
+
 type NamedAPIResource = { name: string; url: string };
 
 export type RawPokemon = {
@@ -59,7 +66,7 @@ export type RawType = {
 async function apiFetch<T>(url: string): Promise<T> {
   const res = await fetch(url, CACHE_OPTIONS);
   if (!res.ok) {
-    throw new Error(`PokéAPI ${res.status}: ${url}`);
+    throw new PokeApiError(res.status, url);
   }
   return res.json() as Promise<T>;
 }

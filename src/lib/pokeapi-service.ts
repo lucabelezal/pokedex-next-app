@@ -1,4 +1,6 @@
+import { cache } from "react";
 import {
+  PokeApiError,
   fetchEvolutionChain,
   fetchPokemon,
   fetchPokemonSpecies,
@@ -46,9 +48,14 @@ async function buildPokemonCatalogItem(id: number): Promise<PokemonCatalogItem |
     ]);
 
     return mapToCatalogItem(pokemon, species, evolutionChain, typeDetails);
-  } catch {
-    // Pokémon inválido ou erro de rede: exclui do catálogo silenciosamente
-    return null;
+  } catch (error) {
+    // 404: Pokémon inexistente no intervalo, retorna null sem ruído
+    if (error instanceof PokeApiError && error.status === 404) {
+      return null;
+    }
+    // Outros erros (rede, rate limit, 5xx): loga e repropaga para falhar o build
+    console.error(`[pokeapi] Falha ao construir item do catálogo para id ${id}:`, error);
+    throw error;
   }
 }
 
@@ -64,10 +71,10 @@ async function fetchInBatches(ids: number[]): Promise<PokemonCatalogItem[]> {
   return results;
 }
 
-export async function getPokemonCatalog(): Promise<PokemonCatalogItem[]> {
+export const getPokemonCatalog = cache(async (): Promise<PokemonCatalogItem[]> => {
   const ids = Array.from({ length: 905 }, (_, i) => i + 1);
   return fetchInBatches(ids);
-}
+});
 
 export async function getPokemonById(id: number): Promise<PokemonCatalogItem | null> {
   return buildPokemonCatalogItem(id);

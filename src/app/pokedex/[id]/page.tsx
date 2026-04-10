@@ -52,7 +52,8 @@ export default async function PokemonDetailPage({ params }: Params) {
 
   const evolutionWithColors = await Promise.all(
     pokemon.evolution.map(async (item) => {
-      const evoData = await getPokemonById(item.id);
+      // Reutiliza o Pokémon já buscado quando é o próprio item da cadeia
+      const evoData = item.id === pokemon.id ? pokemon : await getPokemonById(item.id);
       return {
         ...item,
         heroColor: evoData?.heroColor ?? pokemon.heroColor,
