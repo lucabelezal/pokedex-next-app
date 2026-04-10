@@ -5,6 +5,7 @@ import { BackIcon, ChevronDownIcon, SearchIcon } from "@/components/icons";
 import { PokemonCard } from "@/components/pokemon-card";
 import { TabBar } from "@/components/tab-bar";
 import { useFavorites } from "@/hooks/use-favorites";
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { usePokedexFilters } from "@/hooks/use-pokedex-filters";
 import type { AppConfig, PokemonCatalogItem, SortKey } from "@/lib/pokedex-types";
 
@@ -40,6 +41,8 @@ export function PokedexListClient({ initialCatalog, typeFilters, config, title, 
     typeFilters,
     defaultSort,
   });
+
+  const { visibleItems, hasMore, sentinelRef } = useInfiniteScroll(filtered);
 
   return (
     <main className="mobile-shell bg-white shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
@@ -102,7 +105,7 @@ export function PokedexListClient({ initialCatalog, typeFilters, config, title, 
       </section>
 
       <section className="space-y-3 px-4 pb-[calc(22px+env(safe-area-inset-bottom))] pt-4">
-        {filtered.map((pokemon) => (
+        {visibleItems.map((pokemon) => (
           <PokemonCard
             key={pokemon.id}
             pokemon={pokemon}
@@ -110,6 +113,18 @@ export function PokedexListClient({ initialCatalog, typeFilters, config, title, 
             onToggleFavorite={toggleFavorite}
           />
         ))}
+
+        {hasMore && (
+          <div ref={sentinelRef} className="flex items-center justify-center py-6" aria-hidden="true">
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-[#cccccc] border-t-[#333333]" />
+          </div>
+        )}
+
+        {!hasMore && filtered.length > 0 && (
+          <p className="py-6 text-center text-[13px] text-[#999999]">
+            Você viu todos os Pokémon
+          </p>
+        )}
       </section>
 
       <TabBar />
