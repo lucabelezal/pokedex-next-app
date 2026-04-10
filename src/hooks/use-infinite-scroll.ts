@@ -37,13 +37,20 @@ export function useInfiniteScroll<T>(
   { pageSize = PAGE_SIZE_DEFAULT, rootMargin = "200px" }: UseInfiniteScrollOptions = {},
 ): UseInfiniteScrollResult<T> {
   const [page, setPage] = useState(1);
+  const [prevItems, setPrevItems] = useState(items);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-  // Quando os items mudam (filtro ou ordenação aplicados), volta para
-  // a primeira página e rola ao topo — o usuário está iniciando uma
-  // nova consulta e a posição anterior não tem valor semântico.
-  useEffect(() => {
+  // Padrão React para "ajustar estado quando props mudam" sem useEffect:
+  // setState durante o render faz o React descartar o render atual e
+  // reiniciar com o novo estado — sem cascata, sem effect.
+  // Ref: react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  if (prevItems !== items) {
+    setPrevItems(items);
     setPage(1);
+  }
+
+  // scrollTo é sincronização com API externa do browser — uso legítimo de efeito.
+  useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [items]);
 

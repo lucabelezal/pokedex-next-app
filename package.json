@@ -12,7 +12,8 @@
     "check": "npm run lint && npm run type-check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "prepare": "husky"
   },
   "dependencies": {
     "next": "16.2.3",
@@ -28,6 +29,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.3",
+    "husky": "^9.1.7",
     "jsdom": "^25.0.1",
     "tailwindcss": "^4",
     "typescript": "^5",
