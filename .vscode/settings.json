@@ -11,5 +11,9 @@
         "npm run lint": true,
         "npm install": true,
         "git commit": true
+    },
+    "sonarlint.connectedMode.project": {
+        "connectionId": "skeleton",
+        "projectKey": "pokedex-next-app"
     }
 }
