@@ -1,0 +1,33 @@
+name: copilot-code-review
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review]
+    branches: ['**']
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  request-copilot-review:
+    name: Solicitar Copilot code review
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Solicitar review do Copilot
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            try {
+              await github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                reviewers: ['copilot-pull-request-reviewer'],
+              });
+              console.log('Copilot review solicitado com sucesso');
+            } catch (error) {
+              console.log(`Aviso: não foi possível solicitar review automático: ${error.message}`);
+            }

@@ -2,9 +2,9 @@ name: quality-gates
 
 on:
   pull_request:
-    branches: [main]
+    branches: ['**']
   push:
-    branches: [main]
+    branches: ['**']
 
 jobs:
   security:
