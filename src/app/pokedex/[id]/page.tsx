@@ -8,7 +8,6 @@ import { DirectionalTransition } from "@/components/directional-transition";
 import { ElementoOutline } from "@/components/elemento-outline";
 import { EvoCard, EvolutionArrow } from "@/components/evolution-card";
 import { MetricCard, WeightIcon, HeightIcon, CategoryIcon, AbilityIcon, MaleIcon, FemaleIcon } from "@/components/metric-card";
-import { TabBar } from "@/components/tab-bar";
 import { TypeIcon } from "@/components/type-icon";
 import { getAppConfig, getPokemonById } from "@/lib/pokeapi-service";
 import type { PokemonTypeTag } from "@/lib/pokedex-types";

@@ -1,7 +1,7 @@
 // Tipos que espelham a resposta GraphQL da PokéAPI v1beta2
 
 export type GqlTypeEfficacy = {
-  damage_factor: number; // 0=imune, 50=resistente, 100=normal, 200=fraco, 400=muito fraco
+  damage_factor: number; // 0=imune, 50=resistente, 100=normal, 200=fraco
   type: { name: string }; // tipo atacante
 };
 
@@ -38,7 +38,7 @@ export type GqlEvolutionSpecies = {
   pokemonevolutions: Array<{ min_level: number | null }>;
 };
 
-export type GqlPokemonSpecy = {
+export type GqlPokemonSpecies = {
   gender_rate: number;
   generation: { name: string };
   pokemonspeciesnames: Array<{
@@ -63,7 +63,7 @@ export type GqlPokemon = {
   pokemontypes: GqlPokemonType[];
   pokemonabilities: GqlPokemonAbility[];
   pokemonsprites: GqlPokemonSprites[];
-  pokemonspecy: GqlPokemonSpecy;
+  pokemonspecy: GqlPokemonSpecies;
 };
 
 // Fragmento reutilizável com todos os campos necessários para montar PokemonCatalogItem

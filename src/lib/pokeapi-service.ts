@@ -46,6 +46,10 @@ async function fetchInBatches(ids: number[]): Promise<PokemonCatalogItem[]> {
 }
 
 // catálogo completo cacheado — segunda navegação para /pokedex é instantânea
+// ATENÇÃO: O graphqlFetch usa CACHE_OPTIONS com revalidate: 86400 (24h),
+// mas o unstable_cache aqui está com revalidate: 3600 (1h).
+// O fetch pode impedir que a revalidação de 1h realmente traga dados novos por até 24h.
+// Sugestão: alinhar os TTLs ou permitir parametrização do revalidate no fetch.
 export const getPokemonCatalog = unstable_cache(
   async (): Promise<PokemonCatalogItem[]> => {
     const ids = Array.from({ length: 905 }, (_, i) => i + 1);
@@ -55,6 +59,10 @@ export const getPokemonCatalog = unstable_cache(
   { revalidate: 3600 },
 );
 
+// ATENÇÃO: O graphqlFetch usa CACHE_OPTIONS com revalidate: 86400 (24h),
+// mas o unstable_cache aqui está com revalidate: 3600 (1h).
+// O fetch pode impedir que a revalidação de 1h realmente traga dados novos por até 24h.
+// Sugestão: alinhar os TTLs ou permitir parametrização do revalidate no fetch.
 export const getPokemonById = unstable_cache(
   async (id: number): Promise<PokemonCatalogItem | null> => {
     const data = await graphqlFetch<GetPokemonByIdResult>(
