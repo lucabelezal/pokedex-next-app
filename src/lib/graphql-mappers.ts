@@ -105,10 +105,17 @@ function getDescription(pokemon: GqlPokemon): string {
     texts.find((e) => e.language.name === "pt-br") ??
     texts.find((e) => e.language.name === "en");
   if (!entry?.flavor_text) return "";
-  return entry.flavor_text
-    .replace(/[\f\n\r\u000c]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+  // Remove control characters: \f, \n, \r, \u000c
+  let text = entry.flavor_text;
+  text = text.replaceAll("\f", " ")
+             .replaceAll("\n", " ")
+             .replaceAll("\r", " ")
+             .replaceAll("\u000c", " ");
+  // Remove múltiplos espaços
+  while (text.indexOf("  ") !== -1) {
+    text = text.replaceAll("  ", " ");
+  }
+  return text.trim();
 }
 
 function getCategory(pokemon: GqlPokemon): string {
