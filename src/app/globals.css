@@ -216,13 +216,13 @@ button {
 
 /* ─── View Transition — shared element morph ────────────────────────── */
 ::view-transition-group(.morph) {
-  animation-duration: var(--duration-move);
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
+/* Remove o efeito via-blur que causava "pisca" durante o morph.
+ * O cross-dissolve padrão do browser entre old/new é suficiente. */
 ::view-transition-image-pair(.morph) {
-  animation-name: via-blur;
-}
-@keyframes via-blur {
-  30% { filter: blur(3px); }
+  animation: none;
 }
 
 /* ─── View Transition — tab bar (persistente, backdrop-blur workaround) */

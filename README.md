@@ -66,6 +66,7 @@ O layout foi baseado no projeto da comunidade Figma:
 | [React](https://react.dev) | 19.2.4 |
 | [Tailwind CSS](https://tailwindcss.com) | 4 |
 | TypeScript | 5 |
+| [@ducanh2912/next-pwa](https://github.com/DuCanhGH/next-pwa) | latest |
 
 ---
 
@@ -107,7 +108,9 @@ pokedex-next-app/
 | Decisão | Implementação |
 |---------|--------------|
 | **Renderização** | Geração estática (`force-static`) em todas as páginas |
-| **Dados** | Mock JSON em `src/data/mocks/` (catálogo, regiões, perfil, config) |
+| **Dados em runtime** | `pokedex-service.ts` lê de `src/data/mocks/pokemon-catalog.json` em RAM (~0ms) |
+| **Dados em build-time** | `pokeapi-service.ts` popula o JSON via ~4.500 requests à PokéAPI (seed único) |
+| **Offline-first** | Service Worker (Workbox via `next-pwa`) com CacheFirst para assets e NetworkFirst para API |
 | **Favoritos** | `globalThis` Set no servidor + `/api/favorites` REST na sessão |
 | **Mobile-first** | Viewport sem escala, Safe Areas, Apple WebApp meta |
 | **Client / Server** | Server Components para conteúdo estático; `"use client"` para interatividade |
@@ -161,11 +164,14 @@ npm install
 
 # Servidor de desenvolvimento
 npm run dev
+# ⚠️ O Service Worker é desativado em dev (NODE_ENV=development) para não
+#    interferir no hot-reload. Para testar o PWA/offline, use build + start.
 
 # Build de produção
 npm run build
+# Gera também public/sw.js (Service Worker) e public/workbox-*.js
 
-# Iniciar em produção
+# Iniciar em produção (com Service Worker ativo)
 npm start
 
 # Lint

@@ -13,7 +13,7 @@
     "generation": "2° GERAÇÃO",
     "color": "#4a90d9",
     "accent": "#2c5fa0",
-    "starterIds": [245]
+    "starterIds": [152, 155, 158]
   },
   {
     "key": "hoenn",
@@ -21,7 +21,7 @@
     "generation": "3° GERAÇÃO",
     "color": "#3a8a5a",
     "accent": "#1e5c35",
-    "starterIds": [306, 384]
+    "starterIds": [252, 255, 258]
   },
   {
     "key": "sinnoh",
@@ -29,7 +29,7 @@
     "generation": "4° GERAÇÃO",
     "color": "#7b5ea7",
     "accent": "#4e3070",
-    "starterIds": []
+    "starterIds": [387, 390, 393]
   },
   {
     "key": "unova",
@@ -37,7 +37,7 @@
     "generation": "5° GERAÇÃO",
     "color": "#2b2b2b",
     "accent": "#111111",
-    "starterIds": []
+    "starterIds": [495, 498, 501]
   },
   {
     "key": "kalos",
@@ -45,7 +45,7 @@
     "generation": "6° GERAÇÃO",
     "color": "#1a6fa8",
     "accent": "#0d3d60",
-    "starterIds": []
+    "starterIds": [650, 653, 656]
   },
   {
     "key": "alola",
@@ -53,7 +53,7 @@
     "generation": "7° GERAÇÃO",
     "color": "#d46b1e",
     "accent": "#8a3d05",
-    "starterIds": []
+    "starterIds": [722, 725, 728]
   },
   {
     "key": "galar",
@@ -61,6 +61,6 @@
     "generation": "8° GERAÇÃO",
     "color": "#d44b74",
     "accent": "#8a1a3c",
-    "starterIds": []
+    "starterIds": [810, 813, 816]
   }
 ]

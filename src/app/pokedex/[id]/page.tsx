@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BackIcon } from "@/components/icons";
+import { ViewTransition } from "react";
+import { BackButton } from "@/components/back-button";
 import { DetailFavoriteToggle } from "@/components/detail-favorite-toggle";
 import { DirectionalTransition } from "@/components/directional-transition";
 import { ElementoOutline } from "@/components/elemento-outline";
@@ -10,13 +10,21 @@ import { EvoCard, EvolutionArrow } from "@/components/evolution-card";
 import { MetricCard, WeightIcon, HeightIcon, CategoryIcon, AbilityIcon, MaleIcon, FemaleIcon } from "@/components/metric-card";
 import { TabBar } from "@/components/tab-bar";
 import { TypeIcon } from "@/components/type-icon";
-import { getAppConfig, getPokemonById, getStaticPokemonParams } from "@/lib/pokedex-service";
+import { getAppConfig, getPokemonById, getStaticPokemonParams } from "@/lib/pokeapi-service";
 import type { PokemonTypeTag } from "@/lib/pokedex-types";
 
 const COLOR_MALE = "#2551C4";
 const COLOR_FEMALE = "#FF7596";
 const COLOR_EVOLUTION_LEVEL = "#173EA5";
 const COLOR_EVOLUTION_BORDER = "#E6E6E6";
+
+/** Gera um blurDataURL colorido com a heroColor do Pokémon.
+ * Isso garante que o snapshot do estado novo, durante a view transition,
+ * mostre a cor do herói em vez de uma área em branco enquanto a imagem carrega. */
+function getBlurDataURL(color: string): string {
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect width='4' height='4' fill='${color}'/></svg>`;
+  return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
+}
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -28,7 +36,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const resolved = await params;
-  const pokemon = getPokemonById(Number(resolved.id));
+  const pokemon = await getPokemonById(Number(resolved.id));
 
   if (!pokemon) {
     return {
@@ -43,21 +51,24 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function PokemonDetailPage({ params }: Params) {
   const resolved = await params;
-  const pokemon = getPokemonById(Number(resolved.id));
+  const pokemon = await getPokemonById(Number(resolved.id));
   const config = getAppConfig();
 
   if (!pokemon) {
     notFound();
   }
 
-  const evolutionWithColors = pokemon.evolution.map((item) => {
-    const evoData = getPokemonById(item.id);
-    return {
-      ...item,
-      heroColor: evoData?.heroColor ?? pokemon.heroColor,
-      types: evoData?.types ?? pokemon.types,
-    };
-  });
+  const evolutionWithColors = await Promise.all(
+    pokemon.evolution.map(async (item) => {
+      // Reutiliza o Pokémon já buscado quando é o próprio item da cadeia
+      const evoData = item.id === pokemon.id ? pokemon : await getPokemonById(item.id);
+      return {
+        ...item,
+        heroColor: evoData?.heroColor ?? pokemon.heroColor,
+        types: evoData?.types ?? pokemon.types,
+      };
+    }),
+  );
 
   return (
     <DirectionalTransition>
@@ -90,34 +101,35 @@ export default async function PokemonDetailPage({ params }: Params) {
             className="absolute left-4 right-4 flex items-center justify-between"
             style={{ top: "calc(19px + env(safe-area-inset-top))" }}
           >
-            <Link
-              href="/pokedex"
+            <BackButton
               aria-label="Voltar para a lista"
               className="ios-liquid-btn flex h-10 w-10 items-center justify-center rounded-full text-white transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
+              iconClassName="h-5 w-5"
               transitionTypes={["nav-back"]}
-            >
-              <BackIcon className="h-5 w-5" />
-            </Link>
+            />
             <DetailFavoriteToggle id={pokemon.id} name={pokemon.name} />
           </div>
         </section>
 
-        <Image
-          src={pokemon.image}
-          alt={pokemon.name}
-          width={224}
-          height={224}
-          className="absolute z-10 object-contain"
-          style={{
-            width: "224px",
-            height: "224px",
-            left: "50%",
-            top: "calc(192px + env(safe-area-inset-top))",
-            transform: "translate(-50%, -50%)",
-            viewTransitionName: `pokemon-img-${pokemon.id}`,
-          }}
-          priority
-        />
+        <ViewTransition name={`pokemon-img-${pokemon.id}`} share="morph">
+          <Image
+            src={pokemon.image}
+            alt={pokemon.name}
+            width={224}
+            height={224}
+            className="absolute z-10 object-contain"
+            style={{
+              width: "224px",
+              height: "224px",
+              left: "50%",
+              top: "calc(192px + env(safe-area-inset-top))",
+              transform: "translate(-50%, -50%)",
+            }}
+            placeholder="blur"
+            blurDataURL={getBlurDataURL(pokemon.heroColor)}
+            priority
+          />
+        </ViewTransition>
 
         <section className="rounded-t-[32px] bg-white px-4 pb-28 pt-[32px]">
         <h1
@@ -219,7 +231,7 @@ export default async function PokemonDetailPage({ params }: Params) {
         </section>
       </div>
 
-      <TabBar />
+      {/* <TabBar /> Removido na tela de detalhe para esconder a bottom bar */}
     </main>
     </DirectionalTransition>
   );
