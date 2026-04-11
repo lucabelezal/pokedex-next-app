@@ -52,7 +52,7 @@ export function getAvailableTypeFilters() {
   ];
 }
 
-const REGION_RANGES: Record<string, [number, number]> = {
+export const REGION_RANGES: Record<string, [number, number]> = {
   kanto:  [1,   151],
   johto:  [152, 251],
   hoenn:  [252, 386],

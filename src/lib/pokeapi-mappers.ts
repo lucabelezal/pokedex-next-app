@@ -1,6 +1,5 @@
 import { getTypeMetadata } from "@/lib/type-metadata";
 import type {
-  DamageRelations,
   EvolutionChainLink,
   RawEvolutionChain,
   RawPokemon,
@@ -117,21 +116,16 @@ function typeToTag(typeName: string): PokemonTypeTag {
   return { key: meta.key, label: meta.label, color: meta.color, textColor: meta.textColor };
 }
 
-function computeWeaknesses(
-  pokemonTypes: string[],
-  typeDetails: RawType[],
-): PokemonTypeTag[] {
-  // Calcula efetividade combinada para todos os tipos de ataque (Gen 1-8)
+function computeWeaknesses(typeDetails: RawType[]): PokemonTypeTag[] {
   return ALL_TYPES.filter((attackType) => {
     let multiplier = 1;
 
-    for (let i = 0; i < pokemonTypes.length; i++) {
-      const relations: DamageRelations | undefined = typeDetails[i]?.damage_relations;
-      if (!relations) continue;
+    for (const rawType of typeDetails) {
+      const relations = rawType.damage_relations;
 
       if (relations.no_damage_from.some((t) => t.name === attackType)) {
         multiplier = 0;
-        break; // imune: multiplica por zero, não precisa continuar
+        break;
       } else if (relations.double_damage_from.some((t) => t.name === attackType)) {
         multiplier *= 2;
       } else if (relations.half_damage_from.some((t) => t.name === attackType)) {
@@ -166,7 +160,6 @@ function flattenEvolutionChain(chain: RawEvolutionChain): PokemonEvolutionItem[]
     });
 
     // Segue apenas o primeiro ramo para manter cadeia linear
-    // Evoluções ramificadas (ex: Eevee) podem ser aprimoradas futuramente
     if (link.evolves_to.length > 0) {
       const next = link.evolves_to[0];
       const minLevel = next.evolution_details[0]?.min_level ?? null;
@@ -210,7 +203,7 @@ export function mapToCatalogItem(
     category: getCategory(species),
     ability: getAbility(pokemon),
     gender: getGender(species.gender_rate),
-    weaknesses: computeWeaknesses(pokemonTypes, typeDetails),
+    weaknesses: computeWeaknesses(typeDetails),
     evolution: flattenEvolutionChain(evolutionChain),
   };
 }

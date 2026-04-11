@@ -7,8 +7,9 @@ import {
   fetchType,
 } from "@/lib/pokeapi-client";
 import { mapToCatalogItem } from "@/lib/pokeapi-mappers";
+import { REGION_RANGES } from "@/lib/pokedex-service";
 import { getAllTypeMetadata } from "@/lib/type-metadata";
-import type { PokemonCatalogItem, SortKey } from "@/lib/pokedex-types";
+import type { PokemonCatalogItem } from "@/lib/pokedex-types";
 
 // Re-exporta funções que continuam usando dados estáticos (JSON local)
 export {
@@ -19,18 +20,6 @@ export {
   sortPokemonList,
 } from "@/lib/pokedex-service";
 
-const REGION_RANGES: Record<string, [number, number]> = {
-  kanto:  [1,   151],
-  johto:  [152, 251],
-  hoenn:  [252, 386],
-  sinnoh: [387, 493],
-  unova:  [494, 649],
-  kalos:  [650, 721],
-  alola:  [722, 809],
-  galar:  [810, 905],
-};
-
-// Tamanho de lote para requisições paralelas à PokéAPI
 const BATCH_SIZE = 50;
 
 async function buildPokemonCatalogItem(id: number): Promise<PokemonCatalogItem | null> {
@@ -102,4 +91,4 @@ export function getAvailableTypeFilters(): { key: string; label: string; color: 
   ];
 }
 
-export type { SortKey };
+
