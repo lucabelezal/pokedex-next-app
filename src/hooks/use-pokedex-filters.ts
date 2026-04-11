@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useDeferredValue } from "react";
 import { sortPokemonList } from "@/lib/pokedex-service";
 import type { PokemonCatalogItem, SortKey } from "@/lib/pokedex-types";
 
@@ -36,6 +36,7 @@ export const usePokedexFilters = ({
   const [query, setQuery] = useState("");
   const [type, setType] = useState("all");
   const [sort, setSort] = useState<SortKey>(defaultSort);
+  const deferredQuery = useDeferredValue(query);
 
   const selectedTypeColor = useMemo(
     () => (type !== "all" ? (typeFilters.find((filter) => filter.key === type)?.color ?? "") : ""),
@@ -43,7 +44,7 @@ export const usePokedexFilters = ({
   );
 
   const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
+    const normalized = deferredQuery.trim().toLowerCase();
 
     const byType = initialCatalog.filter((pokemon) => {
       if (type === "all") {
@@ -65,7 +66,7 @@ export const usePokedexFilters = ({
     });
 
     return sortPokemonList(byText, sort);
-  }, [initialCatalog, query, type, sort]);
+  }, [initialCatalog, deferredQuery, type, sort]);
 
   return {
     query,

@@ -231,7 +231,7 @@ export default async function PokemonDetailPage({ params }: Params) {
         </section>
       </div>
 
-      <TabBar />
+      {/* <TabBar /> Removido na tela de detalhe para esconder a bottom bar */}
     </main>
     </DirectionalTransition>
   );
