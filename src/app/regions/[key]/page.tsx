@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { PokedexListClient } from "@/components/pokedex-list-client";
+import { DirectionalTransition } from "@/components/directional-transition";
 import {
   getAppConfig,
   getAvailableTypeFilters,
@@ -32,13 +33,15 @@ export default async function RegionPokedexPage({ params }: Params) {
   const typeFilters = getAvailableTypeFilters();
 
   return (
-    <PokedexListClient
-      initialCatalog={catalog}
-      typeFilters={typeFilters}
-      config={config}
-      title={region.name}
-      backHref="/regions"
-      defaultSort="number-asc"
-    />
+    <DirectionalTransition>
+      <PokedexListClient
+        initialCatalog={catalog}
+        typeFilters={typeFilters}
+        config={config}
+        title={region.name}
+        backHref="/regions"
+        defaultSort="number-asc"
+      />
+    </DirectionalTransition>
   );
 }

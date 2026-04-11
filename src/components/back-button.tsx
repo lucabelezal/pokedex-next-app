@@ -27,13 +27,15 @@ export function BackButton({
       onClick={() => {
         startTransition(() => {
           addTransitionType("nav-back");
-          router.push("/pokedex");
+          if (typeof window !== "undefined" && window.history.length > 1) {
+            router.back();
+          } else {
+            router.push("/pokedex");
+          }
         });
       }}
       aria-label={ariaLabel}
       className={className}
-      // @ts-expect-error — transitionTypes é prop de View Transition API (experimental)
-      transitionTypes={transitionTypes}
     >
       <BackIcon className={iconClassName} />
     </button>
