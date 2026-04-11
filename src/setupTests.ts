@@ -11,7 +11,11 @@ if (typeof window === 'undefined' || typeof document === 'undefined') {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const g = global as any;
 		if (typeof g[prop] === 'undefined') {
-			g[prop] = dom.window[prop];
+			try {
+				g[prop] = dom.window[prop];
+			} catch (e) {
+				// Propriedade read-only, ignora
+			}
 		}
 	});
 }
