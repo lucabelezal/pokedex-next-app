@@ -1,3 +1,13 @@
+// Workaround para CI: garante que window existe mesmo em ambientes onde jsdom não inicializa corretamente
+// Workaround para CI: garante que window existe mesmo em ambientes onde jsdom não inicializa corretamente
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+if (typeof window === 'undefined') {
+  // Define apenas as propriedades mínimas usadas nos testes
+  global.window = {
+    scrollTo: () => {},
+  } as Window & typeof globalThis;
+}
 import { describe, it, expect, beforeAll } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useInfiniteScroll } from '../use-infinite-scroll';
