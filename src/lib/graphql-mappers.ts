@@ -100,11 +100,11 @@ function getDisplayName(pokemon: GqlPokemon): string {
 }
 
 function getDescription(pokemon: GqlPokemon): string {
-  const texts = pokemon.pokemonspecy.pokemonspeciesflavortexts;
+  const texts = pokemon.pokemonspecy?.pokemonspeciesflavortexts ?? [];
   const entry =
     texts.find((e) => e.language.name === "pt-br") ??
     texts.find((e) => e.language.name === "en");
-  if (!entry) return "";
+  if (!entry?.flavor_text) return "";
   return entry.flavor_text
     .replace(/[\f\n\r\u000c]/g, " ")
     .replace(/\s+/g, " ")
