@@ -49,9 +49,7 @@ query getPokemonById($id: Int!) {
         flavor_text
         language { name }
       }
-      pokemonspeciesgenera(where: {language: {name: {_eq: "en"}}}, limit: 1) {
-        genus
-      }
+      # genus agora vem de pokemonspeciesnames (campo genus)
       evolutionchain {
         pokemonspecies(order_by: {order: asc}) {
           id
@@ -91,7 +89,7 @@ query getPokemonBatch($ids: [Int!]!) {
 | `ability` | `pokemonabilities` — primeiro não-oculto |
 | `description` | `pokemonspecy.pokemonspeciesflavortexts` — pt-br first, fallback en |
 | `name` (localizado) | `pokemonspecy.pokemonspeciesnames` — pt-br first, fallback en |
-| `category` | `pokemonspecy.pokemonspeciesgenera[0].genus` (en) sem " Pokémon" |
+| `category` | `pokemonspecy.pokemonspeciesnames` — campo `genus` no item em inglês, sem " Pokémon" |
 | `gender` | `pokemonspecy.gender_rate` |
 | `generation` | `pokemonspecy.generation.name` |
 | `evolution` | `pokemonspecy.evolutionchain.pokemonspecies[]` lista plana → cadeia linear |
