@@ -84,10 +84,11 @@ function getDescription(species: RawPokemonSpecies): string {
     species.flavor_text_entries.find((e) => e.language.name === "pt-br") ??
     species.flavor_text_entries.find((e) => e.language.name === "en");
   if (!entry) return "";
-  return entry.flavor_text
-    .replace(/[\f\n\r\u000c]/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
+    // Remove explicitamente o caractere de controle \u000c (form feed) e outros \f, \n, \r
+    return entry.flavor_text
+      .replace(/[\f\n\r\u000c]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
 }
 
 function getCategory(species: RawPokemonSpecies): string {
