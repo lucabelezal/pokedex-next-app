@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { memo } from "react";
+import { memo, ViewTransition } from "react";
 import { HeartIcon } from "@/components/icons";
 import { ElementoOutline } from "@/components/elemento-outline";
 import { TypeBadge } from "@/components/type-badge";
@@ -43,15 +43,16 @@ export const PokemonCard = memo(function PokemonCard({
         <div className="relative w-[126px] flex-shrink-0" style={{ backgroundColor: pokemon.heroColor }}>
           <ElementoOutline typeKey={pokemon.types[0]?.key} className="absolute left-1/2 top-1/2 h-[116px] w-[116px] -translate-x-1/2 -translate-y-1/2" />
 
-          <Image
-            src={pokemon.image}
-            alt={pokemon.name}
-            width={64}
-            height={64}
-            className="absolute left-1/2 top-1/2 h-[64px] w-[64px] -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-sm"
-            priority={pokemon.id <= 9}
-            style={{ viewTransitionName: `pokemon-img-${pokemon.id}` }}
-          />
+          <ViewTransition name={`pokemon-img-${pokemon.id}`} share="morph" default="none">
+            <Image
+              src={pokemon.image}
+              alt={pokemon.name}
+              width={64}
+              height={64}
+              className="absolute left-1/2 top-1/2 h-[64px] w-[64px] -translate-x-1/2 -translate-y-1/2 object-contain drop-shadow-sm"
+              priority={pokemon.id <= 9}
+            />
+          </ViewTransition>
 
           <div className="absolute right-[8px] top-[8px] z-20">
             <button
