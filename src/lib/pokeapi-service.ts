@@ -24,24 +24,23 @@ export {
 // 905 Pokémon ÷ 100 = ~10 requisições GraphQL vs ~3620 chamadas REST anteriores.
 const BATCH_SIZE = 100;
 
-async function fetchPokemonBatch(ids: number[]): Promise<PokemonCatalogItem[]> {
+async function fetchPokemonBatch(ids: number[], revalidate?: number): Promise<PokemonCatalogItem[]> {
   const data = await graphqlFetch<GetPokemonBatchResult>(
     GET_POKEMON_BATCH,
     { ids },
     "getPokemonBatch",
+    revalidate,
   );
   return data.pokemon.map(mapGqlPokemonToCatalogItem);
 }
 
-async function fetchInBatches(ids: number[]): Promise<PokemonCatalogItem[]> {
+async function fetchInBatches(ids: number[], revalidate?: number): Promise<PokemonCatalogItem[]> {
   const results: PokemonCatalogItem[] = [];
-
   for (let i = 0; i < ids.length; i += BATCH_SIZE) {
     const batch = ids.slice(i, i + BATCH_SIZE);
-    const batchResults = await fetchPokemonBatch(batch);
+    const batchResults = await fetchPokemonBatch(batch, revalidate);
     results.push(...batchResults);
   }
-
   return results;
 }
 
@@ -53,7 +52,8 @@ async function fetchInBatches(ids: number[]): Promise<PokemonCatalogItem[]> {
 export const getPokemonCatalog = unstable_cache(
   async (): Promise<PokemonCatalogItem[]> => {
     const ids = Array.from({ length: 905 }, (_, i) => i + 1);
-    return fetchInBatches(ids);
+    // TTL alinhado: 1h
+    return fetchInBatches(ids, 3600);
   },
   ["pokemon-catalog"],
   { revalidate: 3600 },
@@ -69,6 +69,7 @@ export const getPokemonById = unstable_cache(
       GET_POKEMON_BY_ID,
       { id },
       "getPokemonById",
+      3600,
     );
     const pokemon = data.pokemon[0];
     if (!pokemon) return null;

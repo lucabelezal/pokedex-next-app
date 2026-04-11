@@ -1,7 +1,8 @@
 const GQL_ENDPOINT = "https://graphql.pokeapi.co/v1beta2";
 
-// Cache de 24h: dados da PokéAPI mudam raramente
-const CACHE_OPTIONS = { next: { revalidate: 86400 } } as const;
+
+// Valor padrão de cache: 24h
+const DEFAULT_REVALIDATE = 86400;
 
 export class GraphQLError extends Error {
   constructor(
@@ -17,12 +18,13 @@ export async function graphqlFetch<T>(
   query: string,
   variables?: Record<string, unknown>,
   operationName?: string,
+  revalidate?: number,
 ): Promise<T> {
   const res = await fetch(GQL_ENDPOINT, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ query, variables, operationName }),
-    ...CACHE_OPTIONS,
+    next: { revalidate: revalidate ?? DEFAULT_REVALIDATE },
   });
 
   if (!res.ok) {
