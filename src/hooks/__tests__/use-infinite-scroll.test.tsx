@@ -1,3 +1,6 @@
+
+// Importa explicitamente o setupTests para garantir jsdom antes de qualquer uso de window/document
+import '../../setupTests';
 import { describe, it, expect, beforeAll } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useInfiniteScroll } from '../use-infinite-scroll';
