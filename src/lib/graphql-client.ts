@@ -29,11 +29,15 @@ export async function graphqlFetch<T>(
     throw new Error(`GraphQL HTTP ${res.status}: ${GQL_ENDPOINT}`);
   }
 
-  const json = (await res.json()) as { data?: T; errors?: unknown[] };
+  const json = (await res.json()) as { data?: T | null; errors?: unknown[] };
 
   if (json.errors?.length) {
     throw new GraphQLError(json.errors, query);
   }
-
-  return json.data as T;
+  if (json.data == null) {
+    throw new Error(
+      `GraphQL response missing data: ${GQL_ENDPOINT} | query: ${query.slice(0, 80)}`,
+    );
+  }
+  return json.data;
 }
