@@ -1,4 +1,4 @@
-import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import {
   PokeApiError,
   fetchEvolutionChain,
@@ -48,25 +48,38 @@ async function buildPokemonCatalogItem(id: number): Promise<PokemonCatalogItem |
   }
 }
 
+// unstable_cache persiste no processo Node.js entre requests (inclusive em dev)
+// cada Pokémon tem entrada própria no cache, indexada pelo ID
+const getCachedPokemonItem = unstable_cache(
+  (id: number) => buildPokemonCatalogItem(id),
+  ["pokemon-item"],
+  { revalidate: 3600 },
+);
+
 async function fetchInBatches(ids: number[]): Promise<PokemonCatalogItem[]> {
   const results: PokemonCatalogItem[] = [];
 
   for (let i = 0; i < ids.length; i += BATCH_SIZE) {
     const batch = ids.slice(i, i + BATCH_SIZE);
-    const batchResults = await Promise.all(batch.map(buildPokemonCatalogItem));
+    const batchResults = await Promise.all(batch.map(getCachedPokemonItem));
     results.push(...batchResults.filter((p): p is PokemonCatalogItem => p !== null));
   }
 
   return results;
 }
 
-export const getPokemonCatalog = cache(async (): Promise<PokemonCatalogItem[]> => {
-  const ids = Array.from({ length: 905 }, (_, i) => i + 1);
-  return fetchInBatches(ids);
-});
+// catálogo completo também cacheado — segunda navegação para /pokedex é instantânea
+export const getPokemonCatalog = unstable_cache(
+  async (): Promise<PokemonCatalogItem[]> => {
+    const ids = Array.from({ length: 905 }, (_, i) => i + 1);
+    return fetchInBatches(ids);
+  },
+  ["pokemon-catalog"],
+  { revalidate: 3600 },
+);
 
 export async function getPokemonById(id: number): Promise<PokemonCatalogItem | null> {
-  return buildPokemonCatalogItem(id);
+  return getCachedPokemonItem(id);
 }
 
 export async function getPokemonByRegion(regionKey: string): Promise<PokemonCatalogItem[]> {
