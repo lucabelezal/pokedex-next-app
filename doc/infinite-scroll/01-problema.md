@@ -102,3 +102,124 @@ WebView mid-range. A solução passa por expor apenas o necessário — e carreg
 mais sob demanda.
 
 → Próximo: [02-abordagens.md](./02-abordagens.md)
+
+---
+
+## Segundo problema: N+1 de rede em desenvolvimento
+
+### O que é o problema N+1
+
+O problema N+1 acontece quando, para exibir uma lista de N itens, o sistema
+faz **1 query para obter a lista** + **N queries adicionais** para buscar
+detalhe de cada item — totalizando N+1 roundtrips.
+
+```
+Exemplo genérico:
+  1 query → "me dê os IDs de 905 Pokémon"
+  905 queries → "me dê os dados do Pokémon ID 1, 2, 3... 905"
+  ────────────────────────────────────────────────────────
+  Total: 906 roundtrips à API (o "N+1")
+```
+
+No caso desta aplicação, o N+1 tem **três camadas sobrepostas**:
+
+```
+Camada 1 — Por Pokémon (N=905)
+  Rodada 1 (paralela, lotes de 50):
+    GET /pokemon/{id}          → peso, altura, tipos, habilidades, sprites
+    GET /pokemon-species/{id}  → descrição, geração, cadeia de evolução (URL)
+  Rodada 2 (paralela, dependente dos resultados da Rodada 1):
+    GET /evolution-chain/{url} → cadeia completa
+    GET /type/{name}           → fraquezas (1 ou 2 por Pokémon)
+  ────────────────────────────────────────────────────────────────────
+  Total: 5 requests × 905 = 4.525 requests
+
+Camada 2 — Evolution chains duplicadas
+  ~905 fetches de evolution-chain
+  apenas ~440 cadeias únicas existem na PokéAPI
+  → ~465 fetches duplicados (Pokémon que compartilham a mesma cadeia)
+
+Camada 3 — Types duplicados
+  ~1.400 fetches de type (1 ou 2 por Pokémon, para os 905)
+  apenas 18 tipos únicos existem no jogo
+  → ~1.382 fetches duplicados (React cache() atenua, mas não elimina entre builds)
+
+Total bruto:     ~4.525 requests
+Total necessário: ~2.268 requests (~50% são duplicatas evitáveis)
+```
+
+---
+
+### Por que isso causa o "rendering" em next dev
+
+```
+force-static é ignorado em next dev
+           │
+           ▼
+  cada navegação executa os Server Components novamente
+           │
+           ▼
+  page.tsx chama getPokemonCatalog() em runtime
+           │
+           ▼
+  pokeapi-service.ts dispara ~4.500 requests à PokeAPI
+           │
+           ▼
+  Next.js fica "rendering" por 15-30 segundos
+           │
+           ▼
+  usuário vê a tela travada
+```
+
+**Em produção** (`next build` + `next start`), `force-static` é respeitado:
+o HTML é pré-renderizado uma única vez no build e servido do CDN sem
+nenhum request adicional. O problema é **exclusivo ao ambiente de dev**.
+
+---
+
+### Importante: scroll infinito não resolve o problema de rede
+
+Um equívoco comum: pensar que "lazy loading por scroll" evitaria os requests.
+
+```
+Realidade:
+  page.tsx (Server Component) executa ANTES do HTML ser enviado
+           │
+           ├─ getPokemonCatalog() → 905 requests à PokeAPI
+           │                        (aguarda todos completarem)
+           │
+           ▼
+  HTML com 905 Pokémon serializado é enviado para o browser
+           │
+           ▼
+  useInfiniteScroll recebe initialCatalog[905] como prop
+           │
+           ▼
+  DOM renderiza apenas 20 cards (scroll controla o DOM, não a rede)
+```
+
+O scroll infinito resolve o **problema de DOM** (7.240 nós → 160 nós).
+O problema de **N+1 de rede** é solucionado com uma fonte de dados diferente.
+
+---
+
+### A solução: JSON local como fonte de dados em runtime
+
+```
+ANTES (pokeapi-service.ts em runtime):   APÓS (pokedex-service.ts em runtime):
+
+page.tsx                                 page.tsx
+  └─ import pokeapi-service                └─ import pokedex-service
+       │                                         │
+       └─ 4.500 HTTP requests                    └─ require('./mocks/pokemon-catalog.json')
+            aguarda ~30s                               │
+                                                  JSON já está em RAM
+                                                  (carregado no inicio do processo)
+                                                  ~0ms
+```
+
+`pokemon-catalog.json` (~20MB) contém todos os campos necessários — incluindo
+descrição, cadeia de evolução, peso, altura — gerados uma única vez no build
+pelos `pokeapi-service.ts` + `pokeapi-mappers.ts`.
+
+→ Próximo: [02-abordagens.md](./02-abordagens.md)

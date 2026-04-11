@@ -265,3 +265,331 @@ Build time: ~2-3min (905 fetches)    Build time: <30s (sem fetches)
 ```
 
 → Próximo: [06-performance.md](./06-performance.md)
+
+---
+
+## Problemas clássicos de gestão de dados
+
+Esta seção documenta os 10 problemas clássicos de data management e como
+cada um se manifesta (ou foi resolvido) neste projeto.
+
+---
+
+### 1. N+1 Query Problem
+
+**O que é**: para exibir N itens, o sistema faz 1 query para obter a lista
+e depois N queries individuais para buscar o detalhe de cada item.
+Resultado: latência cresce linearmente com o número de itens.
+
+```
+Exemplo:
+  1 query → "liste os IDs"       → banco retorna [1, 2, 3, ..., 905]
+  905 queries → "detalhe do ID"  → 905 roundtrips ao banco/API
+
+  Total: 906 queries
+  Esperado: 1 query com JOIN
+```
+
+**Neste projeto**:
+
+```
+Camada 1 (Por Pokémon):
+  GET /pokemon/{id}          × 905
+  GET /pokemon-species/{id}  × 905
+  GET /evolution-chain/{url} × 905 (~440 únicas — duplicatas resolvidas por React cache())
+  GET /type/{name}           × ~1.400 (~18 únicas — ampliado por 2 tipos por Pokémon)
+
+Camada 2 (Evolution chains):
+  905 fetches, ~440 únicas → ~465 fetches desnecessários
+
+Camada 3 (Types):
+  ~1.400 fetches, 18 únicos → ~1.382 fetches desnecessários
+
+Total bruto:      ~4.525 requests
+Total necessário: ~2.268 requests
+```
+
+**Solução aplicada**: `pokeapi-service.ts` usa `React.cache()` para
+deduplicar evolution chains e types dentro de uma mesma execução de build.
+O N+1 de Pokémon é aceito em build-time (acontece uma única vez).
+Em runtime, o JSON local elimina completamente requests de API.
+
+---
+
+### 2. Underfetching
+
+**O que é**: a API retorna menos dados do que o necessário, obrigando
+uma segunda (ou terceira) chamada para completar a informação.
+
+```
+Exemplo típico (REST):
+  GET /pokemon/1 → { id: 1, name: "bulbasaur", types: ["grass", "poison"] }
+    ↓ não retorna descrição, evolução, fraquezas
+  GET /pokemon-species/1 → { description, evolution_chain.url }
+    ↓ não retorna a cadeia completa — apenas a URL
+  GET /evolution-chain/1 → { chain: { ... } }
+    ↓ finalmente o dado completo
+  3 roundtrips para exibir 1 card de detalhe
+```
+
+**Neste projeto**:
+
+A PokéAPI exibe underfetching por design — cada endpoint retorna apenas
+um subconjunto do domínio. O `pokeapi-service.ts` resolve fazendo 2 rodadas
+paralelas (Round 1: `pokemon` + `species`; Round 2: `evolution` + `types`).
+
+**O que elimina o problema em runtime**: `pokemon-catalog.json` agrega
+todos os campos em um único objeto `PokemonCatalogItem`. Uma única leitura
+do arquivo já fornece tudo que a lista E o detalhe precisam — sem rodadas
+adicionais.
+
+---
+
+### 3. Overfetching
+
+**O que é**: a API retorna mais dados do que o necessário para a tela atual.
+Banda desperdiçada, parse desnecessário, memória inflada.
+
+```
+Exemplo típico (REST):
+  GET /pokemon/1 → { 100 campos }
+    Tela de lista usa apenas: id, name, number, image, types
+    99% dos campos descartados pelo componente
+```
+
+**Neste projeto**:
+
+A PokéAPI retorna payloads grandes (cada `/pokemon/{id}` tem ~300KB de JSON
+incluindo sprites múltiplos, moves, stat base, etc.). `pokeapi-mappers.ts`
+filtra e normaliza apenas os campos necessários, reduzindo para ~500 bytes
+por Pokémon no `PokemonCatalogItem`.
+
+```
+/pokemon/{id} raw:    ~300KB (JSON completo com 80+ campos)
+                ↓
+     pokeapi-mappers.ts
+                ↓
+PokemonCatalogItem:   ~500B  (apenas os campos usados na UI)
+```
+
+**Solução em runtime**: o JSON local já contém apenas os campos mapeados —
+zero overfetching.
+
+---
+
+### 4. Cache inexistente
+
+**O que é**: cada request vai até a origem mesmo que o mesmo dado tenha
+sido buscado recentemente. Latência artificial e carga desnecessária no
+backend.
+
+```
+Sem cache:
+  Request A → PokeAPI /type/fire → 200ms → responde
+  Request B → PokeAPI /type/fire → 200ms → responde (mesmo dado)
+  Request C → PokeAPI /type/fire → 200ms → responde (mesmo dado)
+  3 × 200ms = 600ms perdidos
+```
+
+**Neste projeto**:
+
+Três camadas de cache foram aplicadas:
+
+```
+1. React.cache() (build-time)
+   → deduplica chamadas idênticas dentro de uma mesma execução do servidor
+   → os 18 tipos únicos são buscados uma única vez por build
+
+2. fetch({ next: { revalidate: 86400 } }) (build-time)
+   → Next.js persiste o resultado em disco por 24h
+   → rebuilds dentro da janela não refazem os requests
+
+3. Service Worker / Cache API (runtime)
+   → assets e sprites em CacheFirst (30 dias para images, 1 ano para JS)
+   → segunda visita não faz nenhum request para a rede
+```
+
+---
+
+### 5. Requests sequenciais (Waterfall)
+
+**O que é**: o sistema aguarda o resultado de um request antes de disparar
+o próximo, mesmo quando não há dependência de dados entre eles. Latência
+total = soma das latências individuais.
+
+```
+Sequencial (ruim):
+  t=0ms  → GET /pokemon/1   →  resposta em 200ms
+  t=200ms → GET /pokemon/2  →  resposta em 200ms
+  t=400ms → GET /pokemon/3  →  resposta em 200ms
+  ...
+  Total para 905 Pokémon: ~180 segundos ❌
+
+Paralelo (correto):
+  t=0ms  → GET /pokemon/{1..50} (50 em paralelo)
+  t=200ms → GET /pokemon/{51..100} (próximo lote)
+  ...
+  Total: ~19 batches × 200ms ≈ 3.8 segundos ✅ (ainda lento, mas 47x melhor)
+```
+
+**Neste projeto**:
+
+`pokeapi-service.ts` usava waterfall em alguns pontos. A implementação
+correta usa `Promise.all` dentro de batches de 50 para paralelizar requests
+do mesmo tipo, enquanto a dependência entre rodadas (Rodada 1 → Rodada 2)
+é respeitada.
+
+**Eliminado em runtime**: JSON local é leitura síncrona — sem waterfall possível.
+
+---
+
+### 6. Payload gigante
+
+**O que é**: a API retorna payloads desnecessariamente grandes para a tela
+atual, aumentando o tempo de download e parse, especialmente em mobile.
+
+```
+Tela de lista (mostra 20 cards):
+  Recebe 905 Pokémon serializados no HTML
+  HTML serializado: ~1.2MB (antes de compressão)
+  Com Brotli:       ~180KB
+  
+  Necessário para renderizar os 20 cards visíveis: ~10KB
+```
+
+**Neste projeto**:
+
+A arquitetura SSG serializa todos os 905 Pokémon no HTML de uma única vez.
+Isso é intencional — elimina a necessidade de qualquer fetch posterior para
+filtros e ordenação. O trade-off é aceito porque:
+
+- Brotli/gzip comprimem JSON repetitivo de forma muito eficiente (~85%)
+- O SSG significa que o HTML vem do CDN (< 100ms de latência)
+- O `useInfiniteScroll` garante que apenas ~160 nós DOM são montados
+
+Para APIs reais, a paginação cursor-based (ver acima) resolve o problema
+de payload para listas longas.
+
+---
+
+### 7. Re-fetch desnecessário
+
+**O que é**: o sistema busca novamente um dado que já está disponível em
+memória ou cache, sem que o dado tenha mudado.
+
+```
+Exemplo:
+  Usuário abre tela de Pokédex → 905 Pokémon buscados
+  Usuário navega para detalhe de Bulbasaur
+  Usuário pressiona Voltar
+  → Sistema busca os 905 Pokémon novamente ❌
+    (os dados não mudaram, estavam em memória)
+```
+
+**Neste projeto**:
+
+O Next.js App Router preserva o estado do Client Component entre navegações
+(sem unmount completo ao usar `<Link>`). O `initialCatalog` prop chegou via
+SSG e nunca precisa ser re-buscado.
+
+**Potencial problema**: se o componente for desmontado por qualquer motivo
+(ex: pressão de memória do sistema operacional em um WebView), o dado é
+perdido. Mitigação: o Service Worker tem o HTML em cache — reload é rápido.
+
+---
+
+### 8. Acoplamento forte entre UI e fonte de dados
+
+**O que é**: componentes dependem diretamente de funções de busca de dados,
+dificultando testes, troca de fonte e manutenção.
+
+```
+Acoplamento forte (ruim):
+  PokemonCard ──imports──> fetch('/api/pokemon/1')
+  ↓
+  Teste de PokemonCard exige mock da rede
+  Trocar PokeAPI por API própria exige mudar o componente
+
+Acoplamento via props (correto):
+  page.tsx ──calls──> getPokemonCatalog()
+  page.tsx ──passes──> <PokedexListClient initialCatalog={catalog} />
+  PokedexListClient ──passes──> <PokemonCard item={item} />
+  ↓
+  PokemonCard não sabe de onde vieram os dados
+  Trocas na fonte de dados afetam apenas page.tsx
+```
+
+**Neste projeto**: a separação entre `pokedex-service.ts` (fonte) e
+componentes (UI) segue o padrão correto. A única mudança necessária para
+trocar a fonte de dados foi alterar o import em 5 arquivos de página —
+zero mudanças nos componentes.
+
+---
+
+### 9. Chuva de requests (Thundering Herd)
+
+**O que é**: múltiplos clients fazem o mesmo request ao mesmo tempo, quando
+o cache expira ou o servidor reinicia — sobrecarregando a origem.
+
+```
+Cache expirou às 12:00:00
+  t=12:00:01 → 1.000 usuários abrem o app
+  → 1.000 requests idênticos chegam na origin ao mesmo tempo
+  → origin fica sobrecarregado
+  → latência sobe, alguns requests falham
+  → usuários tentam novamente → ainda mais requests
+```
+
+**Neste projeto**:
+
+O SSG elimina o thundering herd para HTML — o CDN serve o arquivo estático
+sem nunca bater na origin após o deploy. Para assets, o Service Worker
+adiciona uma camada de cache local: cada device tem seu próprio cache,
+sem coordenação central necessária.
+
+Para APIs reais, o padrão `stale-while-revalidate` (documentado na seção
+de Headers HTTP) distribui a revalidação no tempo, evitando picos.
+
+---
+
+### 10. Estado inconsistente
+
+**O que é**: diferentes partes da UI mostram versões diferentes do mesmo
+dado porque foram buscados em momentos diferentes ou de fontes diferentes.
+
+```
+Exemplo:
+  Lista mostra "Bulbasaur — Favorito: ✅"
+  Detalhe mostra "Bulbasaur — Favorito: ❌"
+  
+  → Buscados em momentos diferentes; estado de favorito divergiu
+```
+
+**Neste projeto**:
+
+O estado de favoritos é gerenciado pelo `use-favorites.ts` + `favorites-store.ts`
+(localStorage), que é a única fonte de verdade. O componente de toggle na
+lista e na tela de detalhe leem do mesmo store — impossível divergir.
+
+Para o catálogo de Pokémon (dados imutáveis no JSON local), inconsistência
+é impossível por design: há apenas uma cópia do dado, nunca sincronizada
+entre instâncias.
+
+---
+
+### Resumo: como este projeto resolve cada problema
+
+| Problema | Camada de resolução |
+|---|---|
+| N+1 | JSON local em runtime; `React.cache()` no build |
+| Underfetching | `PokemonCatalogItem` agrega tudo em um objeto |
+| Overfetching | `pokeapi-mappers.ts` filtra ao construir o JSON |
+| Cache inexistente | `React.cache()` + `revalidate:86400` + Service Worker |
+| Requests sequenciais | `Promise.all` em batches de 50 no build |
+| Payload gigante | Brotli + SSG + `useInfiniteScroll` (DOM limitado) |
+| Re-fetch desnecessário | SSG + App Router preserva estado entre rotas |
+| Acoplamento forte | Service separado de componentes (props boundary) |
+| Chuva de requests | CDN estático + Service Worker (cache local por device) |
+| Estado inconsistente | Store único de favoritos + JSON imutável |
+
+→ Próximo: [06-performance.md](./06-performance.md)
