@@ -1,12 +1,12 @@
 import { unstable_cache } from "next/cache";
+import { graphqlFetch } from "@/lib/graphql-client";
+import { mapGqlPokemonToCatalogItem } from "@/lib/graphql-mappers";
 import {
-  PokeApiError,
-  fetchEvolutionChain,
-  fetchPokemon,
-  fetchPokemonSpecies,
-  fetchType,
-} from "@/lib/pokeapi-client";
-import { mapToCatalogItem } from "@/lib/pokeapi-mappers";
+  GET_POKEMON_BATCH,
+  GET_POKEMON_BY_ID,
+  type GetPokemonBatchResult,
+  type GetPokemonByIdResult,
+} from "@/lib/graphql-queries";
 import { REGION_RANGES } from "@/lib/pokedex-service";
 import { getAllTypeMetadata } from "@/lib/type-metadata";
 import type { PokemonCatalogItem } from "@/lib/pokedex-types";
@@ -20,55 +20,32 @@ export {
   sortPokemonList,
 } from "@/lib/pokedex-service";
 
-const BATCH_SIZE = 50;
+// GraphQL permite buscar 100 Pokémon por requisição (antes: 4 chamadas REST por Pokémon).
+// 905 Pokémon ÷ 100 = ~10 requisições GraphQL vs ~3620 chamadas REST anteriores.
+const BATCH_SIZE = 100;
 
-async function buildPokemonCatalogItem(id: number): Promise<PokemonCatalogItem | null> {
-  try {
-    const [pokemon, species] = await Promise.all([
-      fetchPokemon(id),
-      fetchPokemonSpecies(id),
-    ]);
-
-    const [evolutionChain, ...typeDetails] = await Promise.all([
-      fetchEvolutionChain(species.evolution_chain.url),
-      ...pokemon.types
-        .sort((a, b) => a.slot - b.slot)
-        .map((t) => fetchType(t.type.name)),
-    ]);
-
-    return mapToCatalogItem(pokemon, species, evolutionChain, typeDetails);
-  } catch (error) {
-    // 404: Pokémon inexistente no intervalo, retorna null sem ruído
-    if (error instanceof PokeApiError && error.status === 404) {
-      return null;
-    }
-    // Outros erros (rede, rate limit, 5xx): loga e repropaga para falhar o build
-    console.error(`[pokeapi] Falha ao construir item do catálogo para id ${id}:`, error);
-    throw error;
-  }
+async function fetchPokemonBatch(ids: number[]): Promise<PokemonCatalogItem[]> {
+  const data = await graphqlFetch<GetPokemonBatchResult>(
+    GET_POKEMON_BATCH,
+    { ids },
+    "getPokemonBatch",
+  );
+  return data.pokemon.map(mapGqlPokemonToCatalogItem);
 }
-
-// unstable_cache persiste no processo Node.js entre requests (inclusive em dev)
-// cada Pokémon tem entrada própria no cache, indexada pelo ID
-const getCachedPokemonItem = unstable_cache(
-  (id: number) => buildPokemonCatalogItem(id),
-  ["pokemon-item"],
-  { revalidate: 3600 },
-);
 
 async function fetchInBatches(ids: number[]): Promise<PokemonCatalogItem[]> {
   const results: PokemonCatalogItem[] = [];
 
   for (let i = 0; i < ids.length; i += BATCH_SIZE) {
     const batch = ids.slice(i, i + BATCH_SIZE);
-    const batchResults = await Promise.all(batch.map(getCachedPokemonItem));
-    results.push(...batchResults.filter((p): p is PokemonCatalogItem => p !== null));
+    const batchResults = await fetchPokemonBatch(batch);
+    results.push(...batchResults);
   }
 
   return results;
 }
 
-// catálogo completo também cacheado — segunda navegação para /pokedex é instantânea
+// catálogo completo cacheado — segunda navegação para /pokedex é instantânea
 export const getPokemonCatalog = unstable_cache(
   async (): Promise<PokemonCatalogItem[]> => {
     const ids = Array.from({ length: 905 }, (_, i) => i + 1);
@@ -78,9 +55,20 @@ export const getPokemonCatalog = unstable_cache(
   { revalidate: 3600 },
 );
 
-export async function getPokemonById(id: number): Promise<PokemonCatalogItem | null> {
-  return getCachedPokemonItem(id);
-}
+export const getPokemonById = unstable_cache(
+  async (id: number): Promise<PokemonCatalogItem | null> => {
+    const data = await graphqlFetch<GetPokemonByIdResult>(
+      GET_POKEMON_BY_ID,
+      { id },
+      "getPokemonById",
+    );
+    const pokemon = data.pokemon[0];
+    if (!pokemon) return null;
+    return mapGqlPokemonToCatalogItem(pokemon);
+  },
+  ["pokemon-item"],
+  { revalidate: 3600 },
+);
 
 export async function getPokemonByRegion(regionKey: string): Promise<PokemonCatalogItem[]> {
   const range = REGION_RANGES[regionKey];
