@@ -173,16 +173,14 @@ function buildEvolutionChain(speciesList: GqlEvolutionSpecies[]): PokemonEvoluti
   let current = speciesList.find((s) => s.evolves_from_species_id === null);
 
   while (current) {
+    const evo = current.pokemonevolutions?.[0];
     items.push({
       id: current.id,
       name: formatSlugAsName(current.name),
       number: formatNumber(current.id),
       image: officialArtworkUrl(current.id),
       // pokemonevolutions traz as condições de evolução PARA CHEGAR nesta espécie
-      level:
-        (current.pokemonevolutions[0]?.min_level ?? null) !== null
-          ? `Nível ${current.pokemonevolutions[0].min_level}`
-          : null,
+      level: evo && evo.min_level != null ? `Nível ${evo.min_level}` : null,
     });
 
     const next = speciesList.find(
