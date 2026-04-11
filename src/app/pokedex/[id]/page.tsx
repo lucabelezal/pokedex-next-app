@@ -10,7 +10,7 @@ import { EvoCard, EvolutionArrow } from "@/components/evolution-card";
 import { MetricCard, WeightIcon, HeightIcon, CategoryIcon, AbilityIcon, MaleIcon, FemaleIcon } from "@/components/metric-card";
 import { TabBar } from "@/components/tab-bar";
 import { TypeIcon } from "@/components/type-icon";
-import { getAppConfig, getPokemonById, getStaticPokemonParams } from "@/lib/pokeapi-service";
+import { getAppConfig, getPokemonById } from "@/lib/pokeapi-service";
 import type { PokemonTypeTag } from "@/lib/pokedex-types";
 
 const COLOR_MALE = "#2551C4";
@@ -30,9 +30,10 @@ type Params = {
   params: Promise<{ id: string }>;
 };
 
-export async function generateStaticParams() {
-  return getStaticPokemonParams();
-}
+// Páginas de detalhe são geradas sob demanda (ISR) para evitar rate limit
+// da PokéAPI durante o build. O cache de 24h do graphql-client.ts garante
+// que requisições repetidas não chamem a API novamente.
+export const dynamicParams = true;
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const resolved = await params;
