@@ -13,7 +13,7 @@ if (typeof window === 'undefined' || typeof document === 'undefined') {
 		if (typeof g[prop] === 'undefined') {
 			try {
 				g[prop] = dom.window[prop];
-			} catch (e) {
+			} catch {
 				// Propriedade read-only, ignora
 			}
 		}

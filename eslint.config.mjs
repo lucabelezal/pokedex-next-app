@@ -12,6 +12,12 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Tool-generated files
+    ".claude/**",
+    ".cursor/**",
+    ".windsurf/**",
+    ".agents/**",
+    "coverage/**",
   ]),
 ]);
 

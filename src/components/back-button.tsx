@@ -2,7 +2,7 @@
 
 
 import { useRouter } from "next/navigation";
-import { startTransition } from "react";
+import { startTransition, useCallback } from "react";
 import { addTransitionType } from "react";
 import { BackIcon } from "@/components/icons";
 
@@ -21,19 +21,25 @@ export function BackButton({
 }: BackButtonProps) {
   const router = useRouter();
 
+  const handleClick = useCallback(() => {
+    startTransition(() => {
+      if (transitionTypes) {
+        for (const t of transitionTypes) {
+          addTransitionType(t);
+        }
+      }
+      if (typeof window !== "undefined" && window.history.length > 1) {
+        router.back();
+      } else {
+        router.push("/pokedex");
+      }
+    });
+  }, [router, transitionTypes]);
+
   return (
     <button
       type="button"
-      onClick={() => {
-        startTransition(() => {
-          addTransitionType("nav-back");
-          if (typeof window !== "undefined" && window.history.length > 1) {
-            router.back();
-          } else {
-            router.push("/pokedex");
-          }
-        });
-      }}
+      onClick={handleClick}
       aria-label={ariaLabel}
       className={className}
     >
