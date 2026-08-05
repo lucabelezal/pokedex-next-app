@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState, useDeferredValue } from "react";
-import { sortPokemonList } from "@/lib/pokedex-service";
+import { sortPokemonList } from "@/lib/pokeapi-service";
 import type { PokemonCatalogItem, SortKey } from "@/lib/pokedex-types";
 
 export type PokedexTypeFilter = {

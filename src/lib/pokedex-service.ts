@@ -2,6 +2,7 @@ import appConfigData from "@/data/mocks/app-config.json";
 import catalogData from "@/data/mocks/pokemon-catalog.json";
 import regionsData from "@/data/mocks/regions.json";
 import userProfileData from "@/data/mocks/user-profile.json";
+import { REGION_RANGES } from "@/lib/pokedex-constants";
 import { validateAppConfig, validatePokemonCatalog, validateRegions, validateUserProfile } from "@/lib/runtime-validators";
 import type { AppConfig, PokemonCatalogItem, RegionItem, SortKey, UserProfile } from "@/lib/pokedex-types";
 
@@ -34,35 +35,7 @@ export function getStaticPokemonParams() {
   return catalog.map((pokemon) => ({ id: String(pokemon.id) }));
 }
 
-export function getAvailableTypeFilters() {
-  const typeData = new Map<string, { label: string; color: string }>();
-
-  for (const pokemon of catalog) {
-    for (const type of pokemon.types) {
-      if (!typeData.has(type.key)) {
-        typeData.set(type.key, { label: type.label, color: type.color });
-      }
-    }
-  }
-
-  return [
-    { key: "all", label: "Todos os tipos", color: "" },
-    ...Array.from(typeData.entries())
-      .sort((a, b) => a[1].label.localeCompare(b[1].label, "pt-BR"))
-      .map(([key, { label, color }]) => ({ key, label, color })),
-  ];
-}
-
-export const REGION_RANGES: Record<string, [number, number]> = {
-  kanto:  [1,   151],
-  johto:  [152, 251],
-  hoenn:  [252, 386],
-  sinnoh: [387, 493],
-  unova:  [494, 649],
-  kalos:  [650, 721],
-  alola:  [722, 809],
-  galar:  [810, 905],
-};
+export { REGION_RANGES } from "@/lib/pokedex-constants";
 
 export function getPokemonByRegion(regionKey: string): PokemonCatalogItem[] {
   const range = REGION_RANGES[regionKey];

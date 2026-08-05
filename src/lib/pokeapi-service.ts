@@ -7,7 +7,7 @@ import {
   fetchType,
 } from "@/lib/pokeapi-client";
 import { mapToCatalogItem } from "@/lib/pokeapi-mappers";
-import { REGION_RANGES } from "@/lib/pokedex-service";
+import { REGION_RANGES } from "@/lib/pokedex-constants";
 import { getAllTypeMetadata } from "@/lib/type-metadata";
 import type { PokemonCatalogItem } from "@/lib/pokedex-types";
 

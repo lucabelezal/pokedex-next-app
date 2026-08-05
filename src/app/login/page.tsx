@@ -1,7 +1,7 @@
 import { AuthButton, AppleIcon, GoogleIcon, EmailIcon } from "@/components/auth-button";
 import { PageHeader } from "@/components/page-header";
 import Image from "next/image";
-import { getAppConfig } from "@/lib/pokedex-service";
+import { getAppConfig } from "@/lib/pokeapi-service";
 
 export const dynamic = "force-static";
 
