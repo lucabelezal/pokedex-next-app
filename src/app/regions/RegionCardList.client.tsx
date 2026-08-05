@@ -30,6 +30,7 @@ export function RegionCardList({ regions }: Props) {
           onClick={() => {
             startTransition(() => {
               addTransitionType("nav-forward");
+              sessionStorage.setItem("prev-route", window.location.pathname + window.location.search);
               router.push(`/regions/${region.key}`);
             });
           }}

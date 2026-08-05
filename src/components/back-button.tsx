@@ -29,10 +29,16 @@ export function BackButton({
         }
       }
       if (typeof window !== "undefined" && window.history.length > 1) {
-        router.back();
-      } else {
+        const prev = sessionStorage.getItem("prev-route");
+        if (prev) {
+          sessionStorage.removeItem("prev-route");
+          router.push(prev);
+          return;
+        }
         router.push("/pokedex");
+        return;
       }
+      router.push("/pokedex");
     });
   }, [router, transitionTypes]);
 

@@ -72,6 +72,5 @@ export function useFavorites() {
     loading,
     error,
     toggleFavorite,
-    sync,
   };
 }

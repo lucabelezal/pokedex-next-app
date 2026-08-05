@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ElementoOutline } from "@/components/elemento-outline";
 import type { PokemonTypeTag } from "@/lib/pokedex-types";
 
-export type EvoItem = {
+type EvoItem = {
   id: number;
   name: string;
   number: string;
@@ -37,24 +37,14 @@ function TypePillEvo({ type }: { type: PokemonTypeTag }) {
 export function EvoCard({ item }: { item: EvoItem }) {
   return (
     <div className="relative h-[76px] overflow-hidden rounded-[64px] border border-[#E6E6E6]">
-      <div
-        className="absolute"
-        style={{ width: "96px", height: "74px", left: 0, top: "1px" }}
-      >
+      <div className="absolute w-[96px] h-[74px] left-0 top-[1px]">
         <div
-          className="absolute rounded-[64px]"
+          className="absolute rounded-[64px] w-[95px] h-[74px] left-[1px] top-0"
           style={{
-            width: "95px",
-            height: "74px",
-            left: "1px",
-            top: 0,
             backgroundColor: item.heroColor,
           }}
         />
-        <div
-          className="absolute"
-          style={{ width: "65px", height: "65px", left: "15px", top: "4px" }}
-        >
+        <div className="absolute w-[65px] h-[65px] left-[15px] top-[4px]">
           <ElementoOutline typeKey={item.types[0]?.key} className="h-full w-full" />
         </div>
         <Image
@@ -65,15 +55,9 @@ export function EvoCard({ item }: { item: EvoItem }) {
         />
       </div>
 
-      <div
-        className="absolute flex flex-col gap-[4px]"
-        style={{ left: "108px", top: "10px" }}
-      >
+      <div className="absolute flex flex-col gap-[4px] left-[108px] top-[10px]">
         <div>
-          <p
-            className="text-[16px] font-medium leading-[24px] text-[#1A1A1A]"
-            style={{ marginTop: "-2px" }}
-          >
+          <p className="text-[16px] font-medium leading-[24px] text-[#1A1A1A] -mt-[2px]">
             {item.name}
           </p>
           <p className="text-[12px] font-medium leading-[18px] text-[#4D4D4D]">

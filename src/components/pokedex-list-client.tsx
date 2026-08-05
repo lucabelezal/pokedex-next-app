@@ -7,17 +7,12 @@ import { TabBar } from "@/components/tab-bar";
 import { useFavorites } from "@/hooks/use-favorites";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { usePokedexFilters } from "@/hooks/use-pokedex-filters";
+import type { PokedexTypeFilter } from "@/hooks/use-pokedex-filters";
 import type { AppConfig, PokemonCatalogItem, SortKey } from "@/lib/pokedex-types";
-
-type TypeFilter = {
-  key: string;
-  label: string;
-  color: string;
-};
 
 type PokedexListClientProps = {
   initialCatalog: PokemonCatalogItem[];
-  typeFilters: TypeFilter[];
+  typeFilters: PokedexTypeFilter[];
   config: AppConfig;
   title?: string;
   backHref?: string;

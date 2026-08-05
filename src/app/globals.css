@@ -187,31 +187,44 @@ button {
   animation: var(--duration-enter) ease-out var(--duration-exit) both fade;
 }
 
-/* ─── View Transition — navegação direcional ────────────────────────── */
+/* ─── View Transition — navegação push (iOS-style) ─────────────────── */
+@keyframes push-out-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-30%); }
+}
+@keyframes push-in-from-right {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+@keyframes push-out-right {
+  from { transform: translateX(0); }
+  to { transform: translateX(30%); }
+}
+@keyframes push-in-from-left {
+  from { transform: translateX(-30%); }
+  to { transform: translateX(0); }
+}
+
 ::view-transition-old(.nav-forward) {
-  --slide-offset: -60px;
   animation:
-    var(--duration-exit) ease-in both fade reverse,
-    var(--duration-move) ease-in-out both slide reverse;
+    var(--duration-move) ease-out both push-out-left,
+    var(--duration-exit) ease-in both fade reverse;
 }
 ::view-transition-new(.nav-forward) {
-  --slide-offset: 60px;
   animation:
-    var(--duration-enter) ease-out var(--duration-exit) both fade,
-    var(--duration-move) ease-in-out both slide;
+    var(--duration-move) ease-out both push-in-from-right,
+    var(--duration-enter) ease-out var(--duration-exit) both fade;
 }
 
 ::view-transition-old(.nav-back) {
-  --slide-offset: 60px;
   animation:
-    var(--duration-exit) ease-in both fade reverse,
-    var(--duration-move) ease-in-out both slide reverse;
+    var(--duration-move) ease-out both push-out-right,
+    var(--duration-exit) ease-in both fade reverse;
 }
 ::view-transition-new(.nav-back) {
-  --slide-offset: -60px;
   animation:
-    var(--duration-enter) ease-out var(--duration-exit) both fade,
-    var(--duration-move) ease-in-out both slide;
+    var(--duration-move) ease-out both push-in-from-left,
+    var(--duration-enter) ease-out var(--duration-exit) both fade;
 }
 
 /* ─── View Transition — shared element morph ────────────────────────── */
@@ -231,6 +244,18 @@ button {
 }
 ::view-transition-new(tab-bar) {
   animation: none;
+}
+
+/* ─── Shimmer ────────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
 }
 
 /* ─── View Transition — reduced motion ──────────────────────────────── */

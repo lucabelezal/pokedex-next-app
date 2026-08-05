@@ -27,6 +27,7 @@ export const PokemonCard = memo(function PokemonCard({
         className="absolute inset-0 z-10"
         aria-label={`Ver detalhes de ${pokemon.name}`}
         transitionTypes={["nav-forward"]}
+        onClick={() => sessionStorage.setItem("prev-route", window.location.pathname + window.location.search)}
       />
 
       <div className="flex min-h-[136px]">

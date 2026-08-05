@@ -34,8 +34,7 @@ export function SettingsRow({
   return (
     <div className="flex items-center justify-between px-4 py-3.5">
       <span
-        className="text-[16px] font-medium"
-        style={{ color: danger ? "#e03535" : "#1f2024" }}
+        className={`text-[16px] font-medium ${danger ? "text-[#e03535]" : "text-[#1f2024]"}`}
       >
         {label}
       </span>
@@ -62,12 +61,10 @@ export function SettingsToggleRow({
     <div className="flex items-center justify-between px-4 py-3.5">
       <span className="text-[16px] font-medium text-[#1f2024]">{label}</span>
       <div
-        className="h-[28px] w-[48px] rounded-full p-[2px] transition-colors"
-        style={{ backgroundColor: enabled ? "#173EA5" : "#d0d2d8" }}
+        className={`h-[28px] w-[48px] rounded-full p-[2px] transition-colors ${enabled ? "bg-[#173EA5]" : "bg-[#d0d2d8]"}`}
       >
         <div
-          className="h-[24px] w-[24px] rounded-full bg-white shadow transition-transform"
-          style={{ transform: enabled ? "translateX(20px)" : "translateX(0)" }}
+          className={`h-[24px] w-[24px] rounded-full bg-white shadow transition-transform ${enabled ? "translate-x-[20px]" : "translate-x-0"}`}
         />
       </div>
     </div>
