@@ -1,12 +1,14 @@
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { PokedexListClient } from "@/components/pokedex-list-client";
+import { DirectionalTransition } from "@/components/directional-transition";
 import {
   getAppConfig,
   getAvailableTypeFilters,
   getPokemonByRegion,
   getRegionByKey,
   getRegionsCatalog,
-} from "@/lib/pokedex-service";
+} from "@/lib/pokeapi-service";
 
 export const dynamic = "force-static";
 
@@ -28,17 +30,21 @@ export default async function RegionPokedexPage({ params }: Params) {
   }
 
   const config = getAppConfig();
-  const catalog = getPokemonByRegion(key);
+  const catalog = await getPokemonByRegion(key);
   const typeFilters = getAvailableTypeFilters();
 
   return (
-    <PokedexListClient
-      initialCatalog={catalog}
-      typeFilters={typeFilters}
-      config={config}
-      title={region.name}
-      backHref="/regions"
-      defaultSort="number-asc"
-    />
+    <DirectionalTransition>
+      <Suspense>
+        <PokedexListClient
+          initialCatalog={catalog}
+          typeFilters={typeFilters}
+          config={config}
+          title={region.name}
+          backHref="/regions"
+          defaultSort="number-asc"
+        />
+      </Suspense>
+    </DirectionalTransition>
   );
 }

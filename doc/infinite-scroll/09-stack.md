@@ -21,6 +21,20 @@
 │  │                                                            │  │
 │  │  Chromium rendering engine (Blink + V8)                    │  │
 │  │  ┌──────────────────────────────────────────────────────┐  │  │
+│  │  │  Service Worker (sw.js — Workbox via next-pwa)        │  │  │
+│  │  │                                                       │  │  │
+│  │  │  Intercepta todos os requests HTTP do WebView         │  │  │
+│  │  │  ┌───────────────────────────────────────────────┐   │  │  │
+│  │  │  │  Cache API (por estratégia)                   │   │  │  │
+│  │  │  │  /_next/static/**   → CacheFirst (1 ano)      │   │  │  │
+│  │  │  │  /assets/**         → CacheFirst (7 dias)     │   │  │  │
+│  │  │  │  PokeAPI sprites    → CacheFirst (30 dias)    │   │  │  │
+│  │  │  │  /api/**            → NetworkFirst (1 dia)    │   │  │  │
+│  │  │  │  Navegação (HTML)   → StaleWhileRevalidate    │   │  │  │
+│  │  │  └───────────────────────────────────────────────┘   │  │  │
+│  │  └───────────────────┬──────────────────────────────────┘  │  │
+│  │                      │ requests que passam pelo SW          │  │
+│  │  ┌───────────────────▼──────────────────────────────────┐  │  │
 │  │  │  HTML + CSS + JavaScript                             │  │  │
 │  │  │                                                      │  │  │
 │  │  │  ┌────────────────────────────────────────────────┐  │  │  │
@@ -44,6 +58,31 @@
 
 ---
 
+### Por que o Service Worker fica ENTRE o WebView e o HTML
+
+O Service Worker é um script JavaScript que roda em uma **thread separada**
+(fora da página), com acesso à Fetch API do browser. Ele intercepta todos
+os requests antes que cheguem à rede:
+
+```
+Sem Service Worker:           Com Service Worker:
+  Página faz fetch()            Página faz fetch()
+       │                              │
+       ▼                        Service Worker intercepta
+    Rede                              │
+  (CDN / origem)               ┌─────▼──────────────────┐
+       │                       │  Cache API              │
+       ▼                       │  HIT?  → resposta local │
+  Resposta                     │  MISS? → Rede → Cache   │
+                               └─────────────────────────┘
+```
+
+**Resultado prático**:
+- Segunda visita: 0 requests à rede para HTML e assets estáticos
+- Offline: o app abre e funciona normalmente com dados do cache
+
+---
+
 ### O ciclo de vida completo: do build até o usuário
 
 ```
@@ -53,9 +92,9 @@ DESENVOLVEDOR                                          USUÁRIO
 npm run build
      │
      ├─ Next.js executa page.tsx no Node.js (server-side)
-     │   getAppConfig()           → serializado no HTML
-     │   getPokemonCatalog()      → 905 itens no <script>
-     │   getAvailableTypeFilters() → injetado como prop
+     │   getAppConfig()           → appConfig.json (local, sync)
+     │   getPokemonCatalog()      → unstable_cache → PokéAPI (905 × 4 requests)
+     │   getAvailableTypeFilters() → type-metadata (local, sync)
      │
      ├─ Gera arquivos estáticos:
      │   out/index.html           (HTML com dados embutidos)

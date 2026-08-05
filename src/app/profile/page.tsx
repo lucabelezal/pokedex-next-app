@@ -1,7 +1,7 @@
 import { TabBar } from "@/components/tab-bar";
 import { UserIcon } from "@/components/icons";
 import { SettingsRow, SettingsSection, SettingsToggleRow } from "@/components/settings";
-import { getAppConfig, getUserProfile } from "@/lib/pokedex-service";
+import { getAppConfig, getUserProfile } from "@/lib/pokeapi-service";
 
 export const dynamic = "force-static";
 

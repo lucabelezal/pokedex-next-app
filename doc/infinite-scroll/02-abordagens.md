@@ -179,3 +179,127 @@ over-engineering — adicionaria 13KB ao bundle sem nenhum benefício real.
 ---
 
 → Próximo: [03-decisao.md](./03-decisao.md)
+
+---
+
+## Estratégias de fonte de dados
+
+A escolha de onde buscar os dados tem impacto igual ou maior que a
+estratégia de renderização. As opções avaliadas para este projeto:
+
+```
+FONTE               QUANDO EXECUTA   LATÊNCIA      OFFLINE    DEPS EXTRAS
+─────────────────   ──────────────   ──────────    ───────    ───────────
+PokeAPI (runtime)   Navegação        ~15-30s       ❌         Nenhuma      ← problema original
+JSON local          Build (startup)  ~0ms          ✅         Nenhuma      ← adotado
+IndexedDB           Browser         ~5-50ms       ✅         Nenhuma
+TanStack Query      Browser         ~50-200ms     ⚠️          @tanstack/query
+Service Worker      Browser         0ms (cache)   ✅         @ducanh2912/next-pwa ← complementar
+```
+
+---
+
+### Por que PokeAPI em runtime é problemático
+
+Em desenvolvimento (`next dev`), `force-static` é ignorado — cada
+navegação dispara todos os Server Components novamente:
+
+```
+Usuário clica em "Pokédex"
+        │
+        ▼
+page.tsx executa getPokemonCatalog() (pokeapi-service)
+        │
+        ▼
+~4.500 HTTP requests à PokeAPI
+        │
+        ▼
+aguarda ~15-30 segundos
+        │
+        ▼
+HTML é finalmente gerado e enviado
+```
+
+Em produção, o build faz esses requests uma única vez. O problema
+é que qualquer desenvolvedor abre o app e experimenta 30 segundos
+de "rendering" — o que mascara bugs e retarda o ciclo de feedback.
+
+---
+
+### Por que JSON local é o ideal para runtime
+
+```
+Node.js process startup
+        │
+        ▼
+require('./pokemon-catalog.json') carregado pelo Module Registry
+        │
+        ├─ ~20MB em RAM
+        ├─ Zero I/O adicional por request
+        └─ Disponível em qualquer Server Component sem await
+```
+
+O arquivo JSON é **carregado uma única vez** quando o processo Node.js
+inicia e permanece em RAM durante toda a sessão. Acessos subsequentes
+consultam o Module Registry em memória — tempo de resposta < 1ms.
+
+**~20MB de RAM** para o JSON é negligível: um processo Node.js tem
+baseline de ~200-300MB antes de qualquer dado de negócio ser carregado.
+
+---
+
+### Por que IndexedDB não resolve o problema de Server Components
+
+IndexedDB é uma API do **browser** (cliente). Server Components rodam
+no **Node.js** (servidor). São processos físicos diferentes:
+
+```
+Node.js Process              Browser Process
+───────────────              ───────────────
+Server Components            Client Components
+  getAppConfig()               useState, useEffect
+  getPokemonCatalog()          window.indexedDB
+  generateStaticParams()       localStorage
+                               
+  ├─ Sem acesso ao DOM         ├─ Sem acesso ao sistema de arquivos
+  └─ Sem acesso a APIs web     └─ Sem acesso a módulos Node.js
+```
+
+Migrar para IndexedDB exigiria converter todas as páginas para
+Client Components — perdendo os benefícios de SSG, FCP rápido e
+pré-renderização de HTML.
+
+---
+
+### Por que TanStack Query não resolve aqui
+
+`useInfiniteQuery` e `useQuery` exigem `"use client"` — incompatível
+com `force-static` em Server Components. Além disso, a latência de rede
+para buscar dados que já existem em RAM seria uma regressão injustificada.
+
+TanStack Query é a escolha correta quando há **uma API real no backend**.
+Ver [05-api-design.md](./05-api-design.md) para o design de API paginada.
+
+---
+
+### Service Worker como camada complementar offline-first
+
+```
+Primeira visita:
+  CDN → Browser → Service Worker instala → Cache preenchido
+
+Segunda visita (online):
+  Service Worker intercepta → Cache HIT → resposta imediata
+  ↓ (em background) atualiza cache se houver nova versão
+
+Visita offline:
+  Service Worker intercepta → Cache HIT → app funciona normalmente
+  Sem conexão, sem erro — experiência igual ao online
+```
+
+O Service Worker não substitui a fonte de dados — ele garante que o
+**HTML, JS e imagens** já baixados funcionem sem conexão. Os dados do
+JSON local já estão embutidos no HTML no momento do build, então
+offline-first é natural nesta arquitetura.
+
+→ Próximo: [03-decisao.md](./03-decisao.md)

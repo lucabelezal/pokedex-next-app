@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { sortPokemonList } from "@/lib/pokedex-service";
+import { useMemo, useState, useDeferredValue, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { sortPokemonList } from "@/lib/pokeapi-service";
 import type { PokemonCatalogItem, SortKey } from "@/lib/pokedex-types";
 
 export type PokedexTypeFilter = {
@@ -33,9 +34,28 @@ export const usePokedexFilters = ({
   typeFilters,
   defaultSort,
 }: UsePokedexFiltersParams) => {
-  const [query, setQuery] = useState("");
-  const [type, setType] = useState("all");
-  const [sort, setSort] = useState<SortKey>(defaultSort);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const [query, setQuery] = useState(searchParams.get("q") ?? "");
+  const [type, setType] = useState(searchParams.get("type") ?? "all");
+  const [sort, setSort] = useState<SortKey>(
+    parseSortKey(searchParams.get("sort") ?? defaultSort)
+  );
+  const deferredQuery = useDeferredValue(query);
+
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (query) params.set("q", query);
+    if (type !== "all") params.set("type", type);
+    if (sort !== "az") params.set("sort", sort);
+
+    const next = params.toString();
+    const current = searchParams.toString();
+    if (next !== current) {
+      router.replace(next ? `?${next}` : window.location.pathname, { scroll: false });
+    }
+  }, [query, type, sort, router, searchParams]);
 
   const selectedTypeColor = useMemo(
     () => (type !== "all" ? (typeFilters.find((filter) => filter.key === type)?.color ?? "") : ""),
@@ -43,7 +63,7 @@ export const usePokedexFilters = ({
   );
 
   const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
+    const normalized = deferredQuery.trim().toLowerCase();
 
     const byType = initialCatalog.filter((pokemon) => {
       if (type === "all") {
@@ -65,7 +85,7 @@ export const usePokedexFilters = ({
     });
 
     return sortPokemonList(byText, sort);
-  }, [initialCatalog, query, type, sort]);
+  }, [initialCatalog, deferredQuery, type, sort]);
 
   return {
     query,

@@ -167,3 +167,58 @@ Layout Shift). Ativar apenas se os cards tiverem altura uniforme.
 - [ ] Preload de imagens da próxima página (quando houver API real)
 
 → Próximo: [07-ux.md](./07-ux.md)
+
+---
+
+## Custo de RAM do JSON local
+
+```
+Componente                   Tamanho    Custo de RAM estimado
+─────────────────────────    ─────────  ─────────────────────
+pokemon-catalog.json         ~20MB      ~20MB (string no FS)
+                                        ~25MB (objeto JS parseado)
+app-config.json              ~1KB       desprezível
+regions.json                 ~2KB       desprezível
+user-profile.json            ~1KB       desprezível
+
+Node.js process baseline     ---        ~200-300MB
+(V8 + runtime + Next.js)
+
+Total do processo            ---        ~225-330MB
+```
+
+**~25MB de dados de Pokémon representa menos de 10% do processo Node.js.**
+
+O Module Registry do Node.js garante que o JSON é parsed apenas uma vez
+por processo — chamadas subsequentes a `require('./pokemon-catalog.json')`
+retornam a referência ao objeto já em memória, sem I/O adicional.
+
+```
+Process startup:
+  require('./pokemon-catalog.json')
+       │
+       ├─ I/O (leitura do disco): ~20ms (uma única vez)
+       ├─ JSON.parse: ~50ms (uma única vez)
+       └─ Module Registry armazena resultado em RAM
+              │
+              ▼
+  Requisição 1: Module Registry HIT → ~0ms
+  Requisição 2: Module Registry HIT → ~0ms
+  Requisição N: Module Registry HIT → ~0ms
+```
+
+Comparativo com a alternativa PokeAPI:
+
+```
+JSON local (runtime):                  PokeAPI (runtime):
+  20MB em RAM   →  ~0ms/request          ~0MB em RAM   →  ~30s/request
+  (custo fixo na inicialização)          (custo variável por navegação)
+
+  Para 100 navegações:                   Para 100 navegações:
+  100 × 0ms   = 0ms em requests          100 × 30s = 50 minutos ❌
+```
+
+O trade-off é favorável: pagar 25MB de RAM uma única vez para eliminar toda
+a latência de rede em runtime.
+
+→ Próximo: [07-ux.md](./07-ux.md)

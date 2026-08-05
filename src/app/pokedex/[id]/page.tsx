@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { BackIcon } from "@/components/icons";
-import { DetailFavoriteToggle } from "@/components/detail-favorite-toggle";
 import { DirectionalTransition } from "@/components/directional-transition";
-import { ElementoOutline } from "@/components/elemento-outline";
+import { DetailHero } from "@/components/detail-hero";
 import { EvoCard, EvolutionArrow } from "@/components/evolution-card";
 import { MetricCard, WeightIcon, HeightIcon, CategoryIcon, AbilityIcon, MaleIcon, FemaleIcon } from "@/components/metric-card";
-import { TabBar } from "@/components/tab-bar";
-import { TypeIcon } from "@/components/type-icon";
-import { getAppConfig, getPokemonById, getStaticPokemonParams } from "@/lib/pokedex-service";
-import type { PokemonTypeTag } from "@/lib/pokedex-types";
+import { TypeBadge } from "@/components/type-badge";
+import { getAppConfig, getPokemonById, getStaticPokemonParams } from "@/lib/pokeapi-service";
 
 const COLOR_MALE = "#2551C4";
 const COLOR_FEMALE = "#FF7596";
@@ -28,7 +22,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const resolved = await params;
-  const pokemon = getPokemonById(Number(resolved.id));
+  const pokemon = await getPokemonById(Number(resolved.id));
 
   if (!pokemon) {
     return {
@@ -43,81 +37,30 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function PokemonDetailPage({ params }: Params) {
   const resolved = await params;
-  const pokemon = getPokemonById(Number(resolved.id));
+  const pokemon = await getPokemonById(Number(resolved.id));
   const config = getAppConfig();
 
   if (!pokemon) {
     notFound();
   }
 
-  const evolutionWithColors = pokemon.evolution.map((item) => {
-    const evoData = getPokemonById(item.id);
-    return {
-      ...item,
-      heroColor: evoData?.heroColor ?? pokemon.heroColor,
-      types: evoData?.types ?? pokemon.types,
-    };
-  });
+  const evolutionWithColors = await Promise.all(
+    pokemon.evolution.map(async (item) => {
+      // Reutiliza o Pokémon já buscado quando é o próprio item da cadeia
+      const evoData = item.id === pokemon.id ? pokemon : await getPokemonById(item.id);
+      return {
+        ...item,
+        heroColor: evoData?.heroColor ?? pokemon.heroColor,
+        types: evoData?.types ?? pokemon.types,
+      };
+    }),
+  );
 
   return (
     <DirectionalTransition>
     <main className="mobile-shell flex flex-col bg-white">
       <div className="relative flex-1 bg-white">
-        <section
-          className="relative overflow-hidden bg-white"
-          style={{ height: "calc(304px + env(safe-area-inset-top))" }}
-        >
-          <div
-            className="absolute rounded-full"
-            style={{
-              width: "498px",
-              height: "498px",
-              left: "50%",
-              top: "-194px",
-              transform: "translateX(-50%)",
-              backgroundColor: pokemon.heroColor,
-            }}
-          />
-
-          <div
-            className="absolute"
-            style={{ width: "204px", height: "204px", left: "50%", top: "35px", transform: "translateX(-50%)", zIndex: 0 }}
-          >
-            <ElementoOutline typeKey={pokemon.types[0]?.key} className="h-full w-full" />
-          </div>
-
-          <div
-            className="absolute left-4 right-4 flex items-center justify-between"
-            style={{ top: "calc(19px + env(safe-area-inset-top))" }}
-          >
-            <Link
-              href="/pokedex"
-              aria-label="Voltar para a lista"
-              className="ios-liquid-btn flex h-10 w-10 items-center justify-center rounded-full text-white transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
-              transitionTypes={["nav-back"]}
-            >
-              <BackIcon className="h-5 w-5" />
-            </Link>
-            <DetailFavoriteToggle id={pokemon.id} name={pokemon.name} />
-          </div>
-        </section>
-
-        <Image
-          src={pokemon.image}
-          alt={pokemon.name}
-          width={224}
-          height={224}
-          className="absolute z-10 object-contain"
-          style={{
-            width: "224px",
-            height: "224px",
-            left: "50%",
-            top: "calc(192px + env(safe-area-inset-top))",
-            transform: "translate(-50%, -50%)",
-            viewTransitionName: `pokemon-img-${pokemon.id}`,
-          }}
-          priority
-        />
+        <DetailHero pokemon={pokemon} />
 
         <section className="rounded-t-[32px] bg-white px-4 pb-28 pt-[32px]">
         <h1
@@ -219,23 +162,9 @@ export default async function PokemonDetailPage({ params }: Params) {
         </section>
       </div>
 
-      <TabBar />
+      {/* <TabBar /> Removido na tela de detalhe para esconder a bottom bar */}
     </main>
     </DirectionalTransition>
-  );
-}
-
-function TypeBadge({ type, wide = false }: { type: PokemonTypeTag; wide?: boolean }) {
-  return (
-    <div
-      className={`${wide ? "flex justify-center" : "inline-flex"} h-[36px] items-center gap-2 rounded-[64px] px-[16px]`}
-      style={{ backgroundColor: type.color }}
-    >
-      <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-white">
-        <TypeIcon typeKey={type.key} className="h-[17px] w-[17px] object-contain" />
-      </span>
-      <span className="text-[14px] font-medium text-black">{type.label}</span>
-    </div>
   );
 }
 

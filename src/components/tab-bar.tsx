@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ViewTransition } from "react";
 import {
   ContaActiveIcon,
   HeartActiveIcon,
@@ -33,40 +34,36 @@ export function TabBar() {
   return (
     <>
       <div aria-hidden className="h-[calc(68px+env(safe-area-inset-bottom))]" />
-      <nav className="tab-shell fixed bottom-0 left-1/2 z-40 w-full max-w-[430px] -translate-x-1/2 border-x border-t border-[#d7d7d7] bg-[#f6f6f6] pb-[calc(8px+env(safe-area-inset-bottom))] pt-2" style={{ viewTransitionName: "tab-bar" }}>
-        <ul className="mx-auto flex items-center justify-around px-4">
-          {tabs.map(({ href, label, ActiveIcon, InactiveIcon }) => {
-            const active = pathname === href || pathname.startsWith(`${href}/`);
+      <ViewTransition name="tab-bar">
+        <nav className="tab-shell fixed bottom-0 left-1/2 z-40 w-full max-w-[430px] -translate-x-1/2 border-x border-t border-[#d7d7d7] bg-[#f6f6f6] pb-[calc(8px+env(safe-area-inset-bottom))] pt-2">
+          <ul className="mx-auto flex items-center justify-around px-4">
+            {tabs.map(({ href, label, ActiveIcon, InactiveIcon }) => {
+              const active = pathname === href || pathname.startsWith(`${href}/`);
 
-            return (
-              <li key={href}>
-                <Link
-                  href={href}
-                  className="flex w-[76px] flex-col items-center gap-1 py-1"
-                  aria-current={active ? "page" : undefined}
-                >
-                  <span className="flex h-6 w-6 items-center justify-center">
-                    {active ? (
-                      <ActiveIcon className="h-full w-full" />
-                    ) : (
-                      <InactiveIcon
-                        className="h-full w-full"
-                        style={{ color: "#8f9094" }}
-                      />
-                    )}
-                  </span>
-                  <span
-                    className="min-h-4 text-[12px] font-semibold leading-4"
-                    style={{ color: active ? "#1d4fd7" : "#8f9094" }}
+              return (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="flex w-[76px] flex-col items-center gap-1 py-1"
+                    aria-current={active ? "page" : undefined}
                   >
-                    {label}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+                    <span className="flex h-6 w-6 items-center justify-center">
+                      {active ? (
+                        <ActiveIcon className="h-full w-full" />
+                      ) : (
+                        <InactiveIcon className="h-full w-full text-[var(--tab-inactive)]" />
+                      )}
+                    </span>
+                    <span className={`min-h-4 text-[12px] font-semibold leading-4 ${active ? "text-[var(--tab-active)]" : "text-[var(--tab-inactive)]"}`}>
+                      {label}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </ViewTransition>
     </>
   );
 }
