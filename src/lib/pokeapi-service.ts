@@ -38,11 +38,13 @@ async function buildPokemonCatalogItem(id: number): Promise<PokemonCatalogItem |
 
     return mapToCatalogItem(pokemon, species, evolutionChain, typeDetails);
   } catch (error) {
-    // 404: Pokémon inexistente no intervalo, retorna null sem ruído
-    if (error instanceof PokeApiError && error.status === 404) {
+    if (error instanceof PokeApiError) {
+      if (error.status === 404) {
+        return null;
+      }
+      console.error(`[pokeapi] ${error.message} para id ${id} — ignorando`);
       return null;
     }
-    // Outros erros (rede, rate limit, 5xx): loga e repropaga para falhar o build
     console.error(`[pokeapi] Falha ao construir item do catálogo para id ${id}:`, error);
     throw error;
   }

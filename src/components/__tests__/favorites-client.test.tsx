@@ -32,8 +32,9 @@ vi.mock("@/components/pokemon-card", () => ({
 
 const mockToggleFavorite = vi.fn();
 
-vi.mock("@/hooks/use-favorites", () => ({
-  useFavorites: () => mockUseFavoritesState(),
+vi.mock("@/lib/favorites-context", () => ({
+  FavoritesProvider: ({ children }: { children: ReactNode }) => <>{children}</>,
+  useFavoritesContext: () => mockUseFavoritesState(),
 }));
 
 let mockUseFavoritesState: () => {

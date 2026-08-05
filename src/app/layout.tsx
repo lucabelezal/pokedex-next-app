@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
+import { FavoritesProvider } from "@/lib/favorites-context";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -40,7 +41,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" className={`${poppins.variable} h-full antialiased`}>
-      <body className="min-h-full bg-[#ececec] text-[#1f2024]">{children}</body>
+      <body className="min-h-full bg-[#ececec] text-[#1f2024]">
+        <FavoritesProvider>{children}</FavoritesProvider>
+      </body>
     </html>
   );
 }

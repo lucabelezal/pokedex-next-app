@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { DirectionalTransition } from "@/components/directional-transition";
 import { PokedexListClient } from "@/components/pokedex-list-client";
 import { getAppConfig, getAvailableTypeFilters, getPokemonCatalog } from "@/lib/pokeapi-service";
@@ -11,7 +12,9 @@ export default async function PokedexPage() {
 
   return (
     <DirectionalTransition>
-      <PokedexListClient initialCatalog={catalog} typeFilters={typeFilters} config={config} />
+      <Suspense>
+        <PokedexListClient initialCatalog={catalog} typeFilters={typeFilters} config={config} />
+      </Suspense>
     </DirectionalTransition>
   );
 }

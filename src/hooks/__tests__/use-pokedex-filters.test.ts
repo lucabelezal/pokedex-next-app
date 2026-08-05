@@ -1,9 +1,20 @@
 // @vitest-environment jsdom
 
 import { act, renderHook } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { usePokedexFilters } from "@/hooks/use-pokedex-filters";
 import type { PokemonCatalogItem } from "@/lib/pokedex-types";
+
+const mockReplace = vi.fn();
+
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => new URLSearchParams(),
+  useRouter: () => ({ replace: mockReplace }),
+}));
+
+beforeEach(() => {
+  mockReplace.mockClear();
+});
 
 function makeMockCatalog(): PokemonCatalogItem[] {
   return [

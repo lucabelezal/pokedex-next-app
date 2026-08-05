@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { BackIcon, ChevronDownIcon, SearchIcon } from "@/components/icons";
+import { BackIcon } from "@/components/icons";
+import { PokedexFilters } from "@/components/pokedex-filters";
 import { PokemonCard } from "@/components/pokemon-card";
 import { TabBar } from "@/components/tab-bar";
-import { useFavorites } from "@/hooks/use-favorites";
+import { useFavoritesContext } from "@/lib/favorites-context";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import { usePokedexFilters } from "@/hooks/use-pokedex-filters";
 import type { PokedexTypeFilter } from "@/hooks/use-pokedex-filters";
@@ -20,7 +21,7 @@ type PokedexListClientProps = {
 };
 
 export function PokedexListClient({ initialCatalog, typeFilters, config, title, backHref, defaultSort = "az" }: PokedexListClientProps) {
-  const { favoriteIds, toggleFavorite } = useFavorites();
+  const { favoriteIds, toggleFavorite } = useFavoritesContext();
   const {
     query,
     setQuery,
@@ -28,7 +29,6 @@ export function PokedexListClient({ initialCatalog, typeFilters, config, title, 
     setType,
     sort,
     setSort,
-    parseSortKey,
     selectedTypeColor,
     filtered,
   } = usePokedexFilters({
@@ -54,49 +54,17 @@ export function PokedexListClient({ initialCatalog, typeFilters, config, title, 
             <h1 className="text-[24px] font-black tracking-[-0.02em] text-[#1f2024]">{title}</h1>
           </div>
         )}
-        <label className="relative block">
-          <SearchIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#666666]" />
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={config.texts.searchPlaceholder}
-            className="h-12 w-full rounded-[32px] border-[1.5px] border-[#cccccc] bg-white pl-12 pr-4 text-[14px] font-normal leading-[21px] text-[#333333] outline-none placeholder:text-[#999999]"
-            autoComplete="off"
-          />
-        </label>
-
-        <div className="mt-4 grid grid-cols-2 gap-4">
-          <label className="relative block">
-            <select
-              value={type}
-              onChange={(event) => setType(event.target.value)}
-              className="h-[42px] w-full appearance-none rounded-[48px] px-4 pr-9 text-[14px] font-semibold leading-[21px] text-white outline-none transition-colors"
-              style={{ backgroundColor: selectedTypeColor || "#333333" }}
-            >
-              {typeFilters.map((option) => (
-                <option key={option.key} value={option.key}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <ChevronDownIcon className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white" />
-          </label>
-
-          <label className="relative block">
-            <select
-              value={sort}
-              onChange={(event) => setSort(parseSortKey(event.target.value))}
-              className="h-[42px] w-full appearance-none rounded-[48px] bg-[#333333] px-4 pr-9 text-[14px] font-semibold leading-[21px] text-white outline-none"
-            >
-              <option value="az">{config.texts.sortAzLabel}</option>
-              <option value="za">{config.texts.sortZaLabel}</option>
-              <option value="number-asc">{config.texts.sortNumberAscLabel}</option>
-              <option value="number-desc">{config.texts.sortNumberDescLabel}</option>
-            </select>
-            <ChevronDownIcon className="pointer-events-none absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white" />
-          </label>
-        </div>
+        <PokedexFilters
+          query={query}
+          onQueryChange={setQuery}
+          type={type}
+          onTypeChange={setType}
+          sort={sort}
+          onSortChange={setSort}
+          typeFilters={typeFilters}
+          selectedTypeColor={selectedTypeColor}
+          texts={config.texts}
+        />
       </section>
 
       <section className="space-y-3 px-4 pb-[calc(22px+env(safe-area-inset-bottom))] pt-4">

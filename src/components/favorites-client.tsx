@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { PokemonCard } from "@/components/pokemon-card";
 import { SwipeToDelete } from "@/components/swipe-to-delete";
 import { TabBar } from "@/components/tab-bar";
-import { useFavorites } from "@/hooks/use-favorites";
+import { useFavoritesContext } from "@/lib/favorites-context";
 import type { AppConfig, PokemonCatalogItem } from "@/lib/pokedex-types";
 
 type FavoritesClientProps = {
@@ -14,7 +14,7 @@ type FavoritesClientProps = {
 };
 
 export function FavoritesClient({ config, catalog }: FavoritesClientProps) {
-  const { favoriteIds, loading, error, toggleFavorite } = useFavorites();
+  const { favoriteIds, loading, error, toggleFavorite } = useFavoritesContext();
 
   const favoritePokemons = useMemo(() => {
     return catalog.filter((pokemon) => favoriteIds.includes(pokemon.id));

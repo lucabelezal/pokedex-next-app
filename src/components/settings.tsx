@@ -24,18 +24,14 @@ export function SettingsRow({
   label,
   value,
   chevron = false,
-  danger = false,
 }: {
   label: string;
   value?: string;
   chevron?: boolean;
-  danger?: boolean;
 }) {
   return (
     <div className="flex items-center justify-between px-4 py-3.5">
-      <span
-        className={`text-[16px] font-medium ${danger ? "text-[#e03535]" : "text-[#1f2024]"}`}
-      >
+      <span className="text-[16px] font-medium text-[#1f2024]">
         {label}
       </span>
       <div className="flex items-center gap-2">
