@@ -63,12 +63,42 @@ export type RawType = {
   damage_relations: DamageRelations;
 };
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 1000;
+
+async function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function apiFetch<T>(url: string): Promise<T> {
-  const res = await fetch(url, CACHE_OPTIONS);
-  if (!res.ok) {
-    throw new PokeApiError(res.status, url);
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const res = await fetch(url, CACHE_OPTIONS);
+      if (!res.ok) {
+        const error = new PokeApiError(res.status, url);
+        if (res.status >= 500 && attempt < MAX_RETRIES) {
+          lastError = error;
+          await delay(RETRY_DELAY_MS * attempt);
+          continue;
+        }
+        throw error;
+      }
+      return res.json() as Promise<T>;
+    } catch (err) {
+      if (err instanceof PokeApiError) {
+        lastError = err;
+        if (err.status >= 500 && attempt < MAX_RETRIES) {
+          await delay(RETRY_DELAY_MS * attempt);
+          continue;
+        }
+      }
+      throw err;
+    }
   }
-  return res.json() as Promise<T>;
+
+  throw lastError;
 }
 
 export function fetchPokemon(id: number): Promise<RawPokemon> {

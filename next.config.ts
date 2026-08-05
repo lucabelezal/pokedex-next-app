@@ -65,9 +65,7 @@ const withPWA = withPWAInit({
 const nextConfig: NextConfig = {
   // turbopack: {} silencia o aviso de conflito webpack/turbopack gerado pelo next-pwa
   turbopack: {},
-  experimental: {
-    viewTransition: true,
-  },
+
   images: {
     remotePatterns: [
       {
