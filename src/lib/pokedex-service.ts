@@ -2,12 +2,13 @@ import appConfigData from "@/data/mocks/app-config.json";
 import catalogData from "@/data/mocks/pokemon-catalog.json";
 import regionsData from "@/data/mocks/regions.json";
 import userProfileData from "@/data/mocks/user-profile.json";
+import { validateAppConfig, validatePokemonCatalog, validateRegions, validateUserProfile } from "@/lib/runtime-validators";
 import type { AppConfig, PokemonCatalogItem, RegionItem, SortKey, UserProfile } from "@/lib/pokedex-types";
 
-const appConfig = appConfigData as AppConfig;
-const catalog = catalogData as PokemonCatalogItem[];
-const regions = regionsData as RegionItem[];
-const userProfile = userProfileData as UserProfile;
+const appConfig = validateAppConfig(appConfigData);
+const catalog = validatePokemonCatalog(catalogData);
+const regions = validateRegions(regionsData);
+const userProfile = validateUserProfile(userProfileData);
 
 export function getAppConfig(): AppConfig {
   return appConfig;
