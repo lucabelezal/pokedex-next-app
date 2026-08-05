@@ -166,6 +166,8 @@ button {
   --duration-exit: 150ms;
   --duration-enter: 210ms;
   --duration-move: 400ms;
+  --tab-inactive: #8f9094;
+  --tab-active: #1d4fd7;
 }
 
 /* ─── View Transition — keyframes ──────────────────────────────────── */

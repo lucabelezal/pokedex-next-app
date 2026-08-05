@@ -1,29 +1,16 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ViewTransition } from "react";
-import { BackButton } from "@/components/back-button";
-import { DetailFavoriteToggle } from "@/components/detail-favorite-toggle";
 import { DirectionalTransition } from "@/components/directional-transition";
-import { ElementoOutline } from "@/components/elemento-outline";
+import { DetailHero } from "@/components/detail-hero";
 import { EvoCard, EvolutionArrow } from "@/components/evolution-card";
 import { MetricCard, WeightIcon, HeightIcon, CategoryIcon, AbilityIcon, MaleIcon, FemaleIcon } from "@/components/metric-card";
-import { TypeIcon } from "@/components/type-icon";
+import { TypeBadge } from "@/components/type-badge";
 import { getAppConfig, getPokemonById, getStaticPokemonParams } from "@/lib/pokeapi-service";
-import type { PokemonTypeTag } from "@/lib/pokedex-types";
 
 const COLOR_MALE = "#2551C4";
 const COLOR_FEMALE = "#FF7596";
 const COLOR_EVOLUTION_LEVEL = "#173EA5";
 const COLOR_EVOLUTION_BORDER = "#E6E6E6";
-
-/** Gera um blurDataURL colorido com a heroColor do Pokémon.
- * Isso garante que o snapshot do estado novo, durante a view transition,
- * mostre a cor do herói em vez de uma área em branco enquanto a imagem carrega. */
-function getBlurDataURL(color: string): string {
-  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='4' height='4'><rect width='4' height='4' fill='${color}'/></svg>`;
-  return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
-}
 
 type Params = {
   params: Promise<{ id: string }>;
@@ -73,62 +60,7 @@ export default async function PokemonDetailPage({ params }: Params) {
     <DirectionalTransition>
     <main className="mobile-shell flex flex-col bg-white">
       <div className="relative flex-1 bg-white">
-        <section
-          className="relative overflow-hidden bg-white"
-          style={{ height: "calc(304px + env(safe-area-inset-top))" }}
-        >
-          <div
-            className="absolute rounded-full"
-            style={{
-              width: "498px",
-              height: "498px",
-              left: "50%",
-              top: "-194px",
-              transform: "translateX(-50%)",
-              backgroundColor: pokemon.heroColor,
-            }}
-          />
-
-          <div
-            className="absolute"
-            style={{ width: "204px", height: "204px", left: "50%", top: "35px", transform: "translateX(-50%)", zIndex: 0 }}
-          >
-            <ElementoOutline typeKey={pokemon.types[0]?.key} className="h-full w-full" />
-          </div>
-
-          <div
-            className="absolute left-4 right-4 flex items-center justify-between"
-            style={{ top: "calc(19px + env(safe-area-inset-top))" }}
-          >
-            <BackButton
-              aria-label="Voltar para a lista"
-              className="ios-liquid-btn flex h-10 w-10 items-center justify-center rounded-full text-white transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"
-              iconClassName="h-5 w-5"
-              transitionTypes={["nav-back"]}
-            />
-            <DetailFavoriteToggle id={pokemon.id} name={pokemon.name} />
-          </div>
-        </section>
-
-        <ViewTransition name={`pokemon-img-${pokemon.id}`} share="morph">
-          <Image
-            src={pokemon.image}
-            alt={pokemon.name}
-            width={224}
-            height={224}
-            className="absolute z-10 object-contain"
-            style={{
-              width: "224px",
-              height: "224px",
-              left: "50%",
-              top: "calc(192px + env(safe-area-inset-top))",
-              transform: "translate(-50%, -50%)",
-            }}
-            placeholder="blur"
-            blurDataURL={getBlurDataURL(pokemon.heroColor)}
-            priority
-          />
-        </ViewTransition>
+        <DetailHero pokemon={pokemon} />
 
         <section className="rounded-t-[32px] bg-white px-4 pb-28 pt-[32px]">
         <h1
@@ -233,20 +165,6 @@ export default async function PokemonDetailPage({ params }: Params) {
       {/* <TabBar /> Removido na tela de detalhe para esconder a bottom bar */}
     </main>
     </DirectionalTransition>
-  );
-}
-
-function TypeBadge({ type, wide = false }: { type: PokemonTypeTag; wide?: boolean }) {
-  return (
-    <div
-      className={`${wide ? "flex justify-center" : "inline-flex"} h-[36px] items-center gap-2 rounded-[64px] px-[16px]`}
-      style={{ backgroundColor: type.color }}
-    >
-      <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-white">
-        <TypeIcon typeKey={type.key} className="h-[17px] w-[17px] object-contain" />
-      </span>
-      <span className="text-[14px] font-medium text-black">{type.label}</span>
-    </div>
   );
 }
 

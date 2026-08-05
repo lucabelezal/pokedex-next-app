@@ -51,10 +51,10 @@ export function TabBar() {
                       {active ? (
                         <ActiveIcon className="h-full w-full" />
                       ) : (
-                        <InactiveIcon className="h-full w-full text-[#8f9094]" />
+                        <InactiveIcon className="h-full w-full text-[var(--tab-inactive)]" />
                       )}
                     </span>
-                    <span className={`min-h-4 text-[12px] font-semibold leading-4 ${active ? "text-[#1d4fd7]" : "text-[#8f9094]"}`}>
+                    <span className={`min-h-4 text-[12px] font-semibold leading-4 ${active ? "text-[var(--tab-active)]" : "text-[var(--tab-inactive)]"}`}>
                       {label}
                     </span>
                   </Link>
